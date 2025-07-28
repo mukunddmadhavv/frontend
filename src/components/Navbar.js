@@ -56,7 +56,7 @@ boxSizing: 'border-box',
     },
     hamburger: {
   display: isMobile ? 'block' : 'none',
-  fontSize: '50px', // reduced from 50px to better match logo height
+  fontSize: '40px', // reduced from 50px to better match logo height
   background: 'none',
   border: 'none',
   cursor: 'pointer',
