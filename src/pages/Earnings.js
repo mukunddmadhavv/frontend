@@ -44,14 +44,26 @@ const Earnings = () => {
     setExpandedMonth(expandedMonth === month ? null : month);
   };
 
-  if (loading) return <div style={{ width: '90px', height: '90px' }}>
-            <DotLottieReact
-              src="https://lottie.host/fbc8bd46-75dc-4589-8516-96e479c3b81a/0ho87SHNau.lottie"
-              loop
-              autoplay
-              style={{ width: '100%', height: '100%' }}
-            />
-          </div>;
+  if (loading)
+  return (
+    <div
+      style={{
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        background: 'white',
+      }}
+    >
+      <DotLottieReact
+        src="https://lottie.host/fbc8bd46-75dc-4589-8516-96e479c3b81a/0ho87SHNau.lottie"
+        loop
+        autoplay
+        style={{ width: '120px', height: '120px' }}
+      />
+    </div>
+  );
+
   if (error) return <div>{error}</div>;
 
   return (
