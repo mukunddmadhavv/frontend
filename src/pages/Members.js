@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { parseISO, differenceInDays, addDays } from 'date-fns';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import Navbar from '../components/Navbar';
 import axios from 'axios';
+import { parseISO, differenceInDays, addDays, format } from 'date-fns';
+
 
 const calculatePlanEnd = (joined, validity) => {
   const daysMap = {
@@ -41,7 +42,7 @@ const Members = () => {
       const daysLeft = differenceInDays(planEndsOn, today);
       return {
         ...member,
-        planEndsOn: planEndsOn.toISOString().split('T')[0],
+        planEndsOn: format(planEndsOn, 'dd/MM/yyyy'),
         daysLeft,
       };
     })
