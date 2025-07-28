@@ -1,10 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { differenceInDays, parseISO } from 'date-fns';
+import { parseISO, differenceInDays, addDays } from 'date-fns';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import Navbar from '../components/Navbar';
 import axios from 'axios';
 
-const Member = () => {
+const calculatePlanEnd = (joined, validity) => {
+  const daysMap = {
+    '15 days': 15,
+    '1 month': 30,
+    '3 months': 90,
+    '6 months': 180,
+  };
+
+  const daysToAdd = daysMap[validity] || 30; // default 30 days
+  const start = parseISO(joined);
+  return addDays(start, daysToAdd);
+};
+
+const Members = () => {
   const [members, setMembers] = useState([]);
 
   useEffect(() => {
@@ -21,20 +34,26 @@ const Member = () => {
   }, []);
 
   const today = new Date();
+
   const enriched = members
     .map((member) => {
-      const daysLeft = differenceInDays(parseISO(member.planEndsOn), today);
-      return { ...member, daysLeft };
+      const planEndsOn = calculatePlanEnd(member.dateJoined, member.planValidity);
+      const daysLeft = differenceInDays(planEndsOn, today);
+      return {
+        ...member,
+        planEndsOn: planEndsOn.toISOString().split('T')[0],
+        daysLeft,
+      };
     })
-    .sort((a, b) => a.daysLeft - b.daysLeft); // ascending order
+    .sort((a, b) => a.daysLeft - b.daysLeft);
 
   const getBadgeStyle = (daysLeft) => {
     if (daysLeft < 0) {
-      return { backgroundColor: '#fee2e2', color: '#991b1b' };
+      return { backgroundColor: '#fee2e2', color: '#991b1b' }; // red
     } else if (daysLeft < 5) {
-      return { backgroundColor: '#fef3c7', color: '#92400e' };
+      return { backgroundColor: '#fef3c7', color: '#92400e' }; // yellow
     } else {
-      return { backgroundColor: '#d1fae5', color: '#065f46' };
+      return { backgroundColor: '#d1fae5', color: '#065f46' }; // green
     }
   };
 
@@ -105,10 +124,10 @@ const Member = () => {
                 const isExpired = member.daysLeft < 0;
 
                 return (
-                  <tr key={member.id} style={{ borderBottom: '1px solid #eee' }}>
+                  <tr key={member._id || index} style={{ borderBottom: '1px solid #eee' }}>
                     <td style={{ padding: '12px', fontWeight: 600 }}>{index + 1}</td>
                     <td style={{ padding: '12px', color: '#183b56', fontWeight: 500 }}>
-                      {member.name}
+                      {member.fullName}
                     </td>
                     <td style={{ padding: '12px', color: '#555' }}>{member.planEndsOn}</td>
                     <td style={{ padding: '12px' }}>
@@ -137,4 +156,4 @@ const Member = () => {
   );
 };
 
-export default Member;
+export default Members;
