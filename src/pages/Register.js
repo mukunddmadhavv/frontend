@@ -22,10 +22,46 @@ const RegistrationForm = () => {
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData); // later will send to backend
-  };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const { profilePic, ...dataWithoutProfile } = formData;
+
+const response = await fetch('https://backend-3iv8.onrender.com/api/members', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dataWithoutProfile),
+    });
+
+    const responseData = await response.json();
+    console.log('Server Response:', responseData);
+
+    if (response.ok) {
+      alert('Member registered successfully');
+      setFormData({
+        fullName: '',
+        mobile: '',
+        email: '',
+        moneyPaid: '',
+        profilePic: null,
+        dateJoined: '',
+        planValidity: '',
+      });
+    } else {
+      alert('Registration failed: ' + responseData.message);
+    }
+  } catch (error) {
+    console.error('Client-side Error:', error);
+    alert('An error occurred: ' + error.message);
+  }
+};
+
+
+
+
 
   const fields = [
     { label: 'Full Name', name: 'fullName', type: 'text', required: true },
