@@ -17,8 +17,7 @@ const Login = () => {
     const res = await API.post('/auth/login', form);
     
     // ✅ Store using the key 'businessOwner'
-    localStorage.removeItem('businessOwner');
-localStorage.setItem('businessOwner', JSON.stringify(res.data.businessOwner));
+    localStorage.setItem('businessOwner', JSON.stringify({ _id: owner._id, businessName: owner.businessName }));
 
     // ✅ Navigate to the home page
     navigate('/');
