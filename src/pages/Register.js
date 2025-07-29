@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
+import axios from 'axios';
 
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
@@ -25,20 +26,26 @@ const RegistrationForm = () => {
     e.preventDefault();
 
     try {
+      const ownerMobile = localStorage.getItem('ownerMobile'); // ✅ Business Owner Identifier
+
+      if (!ownerMobile) {
+        alert('Business owner not logged in.');
+        return;
+      }
+
       const { profilePic, ...dataWithoutProfile } = formData;
 
-      const response = await fetch('https://backend-3iv8.onrender.com/api/members', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataWithoutProfile),
-      });
+      const payload = {
+        ...dataWithoutProfile,
+        businessOwner: ownerMobile, // ✅ Attach businessOwner
+      };
 
-      const responseData = await response.json();
-      console.log('Server Response:', responseData);
+      const response = await axios.post(
+        'https://backend-3iv8.onrender.com/api/members',
+        payload
+      );
 
-      if (response.ok) {
+      if (response.status === 201) {
         alert('Member registered successfully');
         setFormData({
           fullName: '',
@@ -50,10 +57,10 @@ const RegistrationForm = () => {
           planValidity: '',
         });
       } else {
-        alert('Registration failed: ' + responseData.message);
+        alert('Registration failed');
       }
     } catch (error) {
-      console.error('Client-side Error:', error);
+      console.error('Error during registration:', error);
       alert('An error occurred: ' + error.message);
     }
   };
