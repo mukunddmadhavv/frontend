@@ -10,21 +10,24 @@ const Earnings = () => {
   const [expandedMonth, setExpandedMonth] = useState(null);
 
   useEffect(() => {
-    const fetchMembers = async () => {
-      try {
-        const response = await fetch('https://backend-3iv8.onrender.com/api/members');
-        const data = await response.json();
-        setRegisteredMembers(data);
-      } catch (err) {
-        setError('Failed to fetch members');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchMembers = async () => {
+    try {
+      const ownerId = localStorage.getItem('ownerId');
+      const response = await fetch(`https://backend-3iv8.onrender.com/api/members/${ownerId}`);
+      const data = await response.json();
+      setRegisteredMembers(data);
+    } catch (err) {
+      setError('Failed to fetch members');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchMembers();
-  }, []);
+  fetchMembers();
+}, []);
+
+
 
   // Organize earnings and members by month
   const earningsData = registeredMembers.reduce((acc, member) => {
