@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { parseISO, differenceInDays, addDays } from 'date-fns';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import Navbar from '../components/Navbar';
 import axios from 'axios';
-import { parseISO, differenceInDays, addDays, format } from 'date-fns';
-
 
 const calculatePlanEnd = (joined, validity) => {
   const daysMap = {
@@ -23,8 +22,11 @@ const Members = () => {
 
   useEffect(() => {
     const fetchMembers = async () => {
+const businessOwner = localStorage.getItem('businessOwner');
+      if (!ownerMobile) return;
+
       try {
-        const res = await axios.get('https://backend-3iv8.onrender.com/api/members');
+const res = await axios.get(`https://backend-3iv8.onrender.com/api/members/${businessOwner}`);
         setMembers(res.data);
       } catch (error) {
         console.error('Failed to fetch members:', error);
@@ -40,12 +42,15 @@ const Members = () => {
     .map((member) => {
       const planEndsOn = calculatePlanEnd(member.dateJoined, member.planValidity);
       const daysLeft = differenceInDays(planEndsOn, today);
+      const daysAfterExpiry = differenceInDays(today, planEndsOn);
       return {
         ...member,
-        planEndsOn: format(planEndsOn, 'dd/MM/yyyy'),
+        planEndsOn: planEndsOn.toISOString().split('T')[0],
         daysLeft,
+        hideAfter7Days: daysAfterExpiry > 7,
       };
     })
+    .filter((member) => !member.hideAfter7Days)
     .sort((a, b) => a.daysLeft - b.daysLeft);
 
   const getBadgeStyle = (daysLeft) => {
