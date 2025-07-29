@@ -17,16 +17,15 @@ const calculatePlanEnd = (joined, validity) => {
   return addDays(start, daysToAdd);
 };
 
+
+
 const Members = () => {
   const [members, setMembers] = useState([]);
 
   useEffect(() => {
     const fetchMembers = async () => {
-const businessOwner = localStorage.getItem('businessOwner');
-      if (!ownerMobile) return;
-
       try {
-const res = await axios.get(`https://backend-3iv8.onrender.com/api/members/${businessOwner}`);
+        const res = await axios.get('https://backend-3iv8.onrender.com/api/members');
         setMembers(res.data);
       } catch (error) {
         console.error('Failed to fetch members:', error);
@@ -38,7 +37,7 @@ const res = await axios.get(`https://backend-3iv8.onrender.com/api/members/${bus
 
   const today = new Date();
 
-  const enriched = members
+   const enriched = members
     .map((member) => {
       const planEndsOn = calculatePlanEnd(member.dateJoined, member.planValidity);
       const daysLeft = differenceInDays(planEndsOn, today);
@@ -47,11 +46,12 @@ const res = await axios.get(`https://backend-3iv8.onrender.com/api/members/${bus
         ...member,
         planEndsOn: planEndsOn.toISOString().split('T')[0],
         daysLeft,
-        hideAfter7Days: daysAfterExpiry > 7,
+        hideAfter7Days: daysAfterExpiry > 7, // true if expired more than 7 days ago
       };
     })
-    .filter((member) => !member.hideAfter7Days)
+    .filter((member) => !member.hideAfter7Days) // remove those expired more than 7 days ago
     .sort((a, b) => a.daysLeft - b.daysLeft);
+
 
   const getBadgeStyle = (daysLeft) => {
     if (daysLeft < 0) {
