@@ -141,7 +141,7 @@ const Signup = () => {
       cursor: 'pointer',
     }}
   >
-    Log In
+<strong> Log In</strong>
   </button>
 </div>
 
