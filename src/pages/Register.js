@@ -22,7 +22,7 @@ const RegistrationForm = () => {
   };
 
   
-      const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
 
   try {
@@ -35,7 +35,15 @@ const RegistrationForm = () => {
       return;
     }
 
-    const { profilePic, ...dataWithoutProfile } = formData;
+    const dataToSend = {
+      fullName: formData.fullName,
+      mobile: formData.mobile,
+      email: formData.email,
+      moneyPaid: formData.moneyPaid,
+      dateJoined: formData.dateJoined,
+      planValidity: formData.planValidity,
+      businessOwner: businessOwner,
+    };
 
     const response = await fetch('https://backend-3iv8.onrender.com/api/members', {
       method: 'POST',
@@ -43,10 +51,7 @@ const RegistrationForm = () => {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({
-        ...dataWithoutProfile,
-        businessOwner, // ✅ Add this
-      }),
+      body: JSON.stringify(dataToSend),
     });
 
     const responseData = await response.json();
@@ -59,7 +64,6 @@ const RegistrationForm = () => {
         mobile: '',
         email: '',
         moneyPaid: '',
-        profilePic: null,
         dateJoined: '',
         planValidity: '',
       });
@@ -71,6 +75,7 @@ const RegistrationForm = () => {
     alert('An error occurred: ' + error.message);
   }
 };
+
 
 
 
