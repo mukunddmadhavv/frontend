@@ -15,7 +15,7 @@ const Login = () => {
     try {
       const res = await API.post('/auth/login', form);
       localStorage.setItem('owner', JSON.stringify(res.data.owner));
-      navigate('/home');
+      navigate('/');
     } catch (err) {
       alert(err.response?.data?.message || 'Login failed');
     }
