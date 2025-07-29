@@ -26,7 +26,7 @@ const RegistrationForm = () => {
     e.preventDefault();
 
     try {
-      const ownerMobile = localStorage.getItem('ownerMobile'); // ✅ Business Owner Identifier
+const businessOwner = localStorage.getItem('ownerMobile'); // keep key name as-is if already saved like this
 
       if (!ownerMobile) {
         alert('Business owner not logged in.');
@@ -37,7 +37,7 @@ const RegistrationForm = () => {
 
       const payload = {
         ...dataWithoutProfile,
-        businessOwner: ownerMobile, // ✅ Attach businessOwner
+businessOwner, // correct key matches backend schema
       };
 
       const response = await axios.post(
