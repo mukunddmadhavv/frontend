@@ -23,17 +23,25 @@ const Members = () => {
   const [members, setMembers] = useState([]);
 
   useEffect(() => {
-    const fetchMembers = async () => {
-      try {
-        const res = await axios.get('https://backend-3iv8.onrender.com/api/members');
-        setMembers(res.data);
-      } catch (error) {
-        console.error('Failed to fetch members:', error);
-      }
-    };
+  const fetchMembers = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem('user'));
 
-    fetchMembers();
-  }, []);
+      if (!user?._id) {
+        alert("Please login again.");
+        return;
+      }
+
+      const res = await axios.get(`https://backend-3iv8.onrender.com/api/members/${user._id}`);
+      setMembers(res.data);
+    } catch (error) {
+      console.error('Failed to fetch members:', error);
+    }
+  };
+
+  fetchMembers();
+}, []);
+
 
   const today = new Date();
 
