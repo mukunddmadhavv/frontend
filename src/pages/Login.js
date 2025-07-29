@@ -12,75 +12,76 @@ const Login = () => {
   };
 
   const handleSubmit = async e => {
-  e.preventDefault();
-  try {
-    const res = await API.post('/auth/login', form);
-    
-    // ✅ Store using the key 'businessOwner'
-    localStorage.removeItem('businessOwner');
-localStorage.setItem('businessOwner', JSON.stringify(res.data.businessOwner));
+    e.preventDefault();
+    try {
+      const res = await API.post('/auth/login', form);
 
-    // ✅ Navigate to the home page
-    navigate('/');
-  } catch (err) {
-    alert(err.response?.data?.message || 'Login failed');
-  }
-};
+      // ✅ Save token + businessOwner info
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('businessOwner', JSON.stringify(res.data.businessOwner));
+
+      // ✅ Navigate to home
+      navigate('/');
+    } catch (err) {
+      alert(err.response?.data?.message || 'Login failed');
+    }
+  };
 
   return (
     <>
-    <Navbar/>
-    <div style={styles.container}>
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <h2 style={styles.title}>🔐 Business Login</h2>
-        <input
-          type="text"
-          name="mobile"
-          placeholder="📱 Mobile Number"
-          onChange={handleChange}
-          required
-          style={styles.input}
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="🔑 Password"
-          onChange={handleChange}
-          required
-          style={styles.input}
-        />
-        <button type="submit" style={styles.button}>Login</button>
-        <div
-  style={{
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'baseline',
-    gap: '10px',
-    marginTop: '20px',
-  }}
->
-  <span style={{ color: '#fff', fontSize: '14px' }}>
-    Not registered yet?
-  </span>
-  <button
-    type="button"
-    onClick={() => navigate('/signup')}
-    style={{
-      backgroundColor: '#28a745',
-      color: '#fff',
-      border: 'none',
-      borderRadius: '6px',
-      fontFamily: 'Plus Jakarta Sans, sans-serif',
-      padding: '6px 12px',
-      fontSize: '14px',
-      cursor: 'pointer',
-    }}
-  ><strong>Sign Up</strong></button>
-  
-</div>
+      <Navbar />
+      <div style={styles.container}>
+        <form onSubmit={handleSubmit} style={styles.form}>
+          <h2 style={styles.title}>🔐 Business Login</h2>
+          <input
+            type="text"
+            name="mobile"
+            placeholder="📱 Mobile Number"
+            onChange={handleChange}
+            required
+            style={styles.input}
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="🔑 Password"
+            onChange={handleChange}
+            required
+            style={styles.input}
+          />
+          <button type="submit" style={styles.button}>Login</button>
 
-      </form>
-    </div>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'baseline',
+              gap: '10px',
+              marginTop: '20px',
+            }}
+          >
+            <span style={{ color: '#fff', fontSize: '14px' }}>
+              Not registered yet?
+            </span>
+            <button
+              type="button"
+              onClick={() => navigate('/signup')}
+              style={{
+                backgroundColor: '#28a745',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '6px',
+                fontFamily: 'Plus Jakarta Sans, sans-serif',
+                padding: '6px 12px',
+                fontSize: '14px',
+                cursor: 'pointer',
+              }}
+            >
+              <strong>Sign Up</strong>
+            </button>
+          </div>
+        </form>
+      </div>
     </>
   );
 };
@@ -88,7 +89,7 @@ localStorage.setItem('businessOwner', JSON.stringify(res.data.businessOwner));
 const styles = {
   container: {
     minHeight: '100vh',
-    background: 'linear-gradient(180deg, #083ca0,black)',
+    background: 'linear-gradient(180deg, #083ca0, black)',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'baseline',
