@@ -81,7 +81,17 @@ const Navbar = () => {
         <li><a href="/" style={styles.link}>Home</a></li>
         <li><a href="/members" style={styles.link}>Members</a></li>
         <li><a href="/earnings" style={styles.link}>Earnings</a></li>
-        <li><a href="/login" style={styles.link}>Log Out</a></li>
+        <li>
+  <button
+    style={{ ...styles.link, background: 'none', border: 'none', cursor: 'pointer' }}
+    onClick={() => {
+      localStorage.removeItem('businessOwner');
+      window.location.href = '/login'; // forces full reload
+    }}
+  >
+    Log Out
+  </button>
+</li>
       </ul>
     </nav>
   );
