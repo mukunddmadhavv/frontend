@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const Navbar = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+
+  const hideHamburger = location.pathname === '/login' || location.pathname === '/signup';
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
     window.addEventListener('resize', handleResize);
-
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -16,14 +19,12 @@ const Navbar = () => {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingLeft:'20px',
-      paddingTop:'10px',
-      paddingRight:'10px',
-      paddingBottom:'0px',  
+      paddingLeft: '20px',
+      paddingTop: '10px',
+      paddingRight: '10px',
+      paddingBottom: '0px',
       width: '100%',
-boxSizing: 'border-box',
-
-
+      boxSizing: 'border-box',
       backgroundColor: '#ffffff',
       boxShadow: '0 2px 6px rgba(0, 0, 0, 0.05)',
       fontFamily: "'Plus Jakarta Sans', sans-serif",
@@ -55,18 +56,17 @@ boxSizing: 'border-box',
       fontSize: '1rem',
     },
     hamburger: {
-  display: isMobile ? 'block' : 'none',
-  fontSize: '40px', // reduced from 50px to better match logo height
-  background: 'none',
-  border: 'none',
-  cursor: 'pointer',
-  color: '#083ca0',
-  paddingBottom: '10px',
-  margin: 0,
-  lineHeight: 1,
-  alignSelf: 'center', // vertically centers inside flex
-}
-
+      display: hideHamburger ? 'none' : (isMobile ? 'block' : 'none'),
+      fontSize: '40px',
+      background: 'none',
+      border: 'none',
+      cursor: 'pointer',
+      color: '#083ca0',
+      paddingBottom: '10px',
+      margin: 0,
+      lineHeight: 1,
+      alignSelf: 'center',
+    }
   };
 
   return (
@@ -78,10 +78,10 @@ boxSizing: 'border-box',
       </button>
 
       <ul style={styles.links}>
-        <li><a href="/" style={styles.link}>Dashboard</a></li>
+        <li><a href="/" style={styles.link}>Home</a></li>
         <li><a href="/members" style={styles.link}>Members</a></li>
-        <li><a href="/plans" style={styles.link}>Plans</a></li>
-        <li><a href="/reports" style={styles.link}>Reports</a></li>
+        <li><a href="/earnings" style={styles.link}>Earnings</a></li>
+        <li><a href="/login" style={styles.link}>Log Out</a></li>
       </ul>
     </nav>
   );
