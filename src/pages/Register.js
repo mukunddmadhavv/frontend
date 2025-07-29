@@ -26,14 +26,26 @@ const RegistrationForm = () => {
 
     try {
       const { profilePic, ...dataWithoutProfile } = formData;
+const user = JSON.parse(localStorage.getItem('user'));
 
-      const response = await fetch('https://backend-3iv8.onrender.com/api/members', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataWithoutProfile),
-      });
+if (!user?._id) {
+  alert("Please login again.");
+  return;
+}
+
+const memberData = {
+  ...dataWithoutProfile,
+  businessOwner: user._id, // 👈 attach owner ID
+};
+
+const response = await fetch('https://backend-3iv8.onrender.com/api/members', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(memberData),
+});
+
 
       const responseData = await response.json();
       console.log('Server Response:', responseData);
