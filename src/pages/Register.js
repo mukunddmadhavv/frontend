@@ -7,77 +7,68 @@ const RegistrationForm = () => {
     mobile: '',
     email: '',
     moneyPaid: '',
-    profilePic: null,
     dateJoined: '',
     planValidity: '',
   });
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === 'profilePic') {
-      setFormData({ ...formData, [name]: files[0] });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
-  
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  try {
-    const owner = JSON.parse(localStorage.getItem('businessOwner'));
-    const token = owner?.token;
-    const businessOwner = owner?.id;
+    try {
+      const owner = JSON.parse(localStorage.getItem('businessOwner'));
+      const token = owner?.token;
+      const businessOwner = owner?.id;
 
-    if (!token || !businessOwner) {
-      alert('You are not logged in. Please login again.');
-      return;
-    }
+      if (!token || !businessOwner) {
+        alert('You are not logged in. Please login again.');
+        return;
+      }
 
-    const dataToSend = {
-      fullName: formData.fullName,
-      mobile: formData.mobile,
-      email: formData.email,
-      moneyPaid: formData.moneyPaid,
-      dateJoined: formData.dateJoined,
-      planValidity: formData.planValidity,
-      businessOwner: businessOwner,
-    };
+      const dataToSend = {
+        fullName: formData.fullName,
+        mobile: formData.mobile,
+        email: formData.email,
+        moneyPaid: formData.moneyPaid,
+        dateJoined: formData.dateJoined,
+        planValidity: formData.planValidity,
+        businessOwner: businessOwner,
+      };
 
-    const response = await fetch('https://backend-3iv8.onrender.com/api/members', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(dataToSend),
-    });
-
-    const responseData = await response.json();
-    console.log('Server Response:', responseData);
-
-    if (response.ok) {
-      alert('Member registered successfully');
-      setFormData({
-        fullName: '',
-        mobile: '',
-        email: '',
-        moneyPaid: '',
-        dateJoined: '',
-        planValidity: '',
+      const response = await fetch('https://backend-3iv8.onrender.com/api/members', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(dataToSend),
       });
-    } else {
-      alert('Registration failed: ' + responseData.message);
+
+      const responseData = await response.json();
+      console.log('Server Response:', responseData);
+
+      if (response.ok) {
+        alert('Member registered successfully');
+        setFormData({
+          fullName: '',
+          mobile: '',
+          email: '',
+          moneyPaid: '',
+          dateJoined: '',
+          planValidity: '',
+        });
+      } else {
+        alert('Registration failed: ' + responseData.message);
+      }
+    } catch (error) {
+      console.error('Client-side Error:', error);
+      alert('An error occurred: ' + error.message);
     }
-  } catch (error) {
-    console.error('Client-side Error:', error);
-    alert('An error occurred: ' + error.message);
-  }
-};
-
-
-
+  };
 
   const fields = [
     { label: 'Full Name', name: 'fullName', type: 'text', required: true },
@@ -116,37 +107,6 @@ const handleSubmit = async (e) => {
             maxWidth: '500px',
           }}
         >
-          {/* Profile Picture Upload */}
-          <div style={{ marginBottom: '24px', textAlign: 'center' }}>
-            <label htmlFor="profilePic">
-              <div
-                style={{
-                  width: '100px',
-                  height: '100px',
-                  borderRadius: '50%',
-                  border: '2px #083ca0',
-                  margin: 'auto',
-                  backgroundImage:
-                    'url("https://img.freepik.com/premium-vector/profile-picture-placeholder-avatar-silhouette-gray-tones-icon-colored-shapes-gradient_1076610-40164.jpg?semt=ais_hybrid&w=740")',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  cursor: 'pointer',
-                }}
-              ></div>
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              id="profilePic"
-              name="profilePic"
-              onChange={handleChange}
-              style={{ display: 'none' }}
-            />
-            <p style={{ fontSize: '13px', color: '#777', marginTop: '8px' }}>
-              Tap to upload profile picture
-            </p>
-          </div>
-
           {fields.map((field) => (
             <div key={field.name} style={{ marginBottom: '16px' }}>
               <label
