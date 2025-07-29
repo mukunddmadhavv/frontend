@@ -16,68 +16,78 @@ const RegistrationForm = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    // ✅ Validate all required fields before sending
-    const requiredFields = ['fullName', 'mobile', 'moneyPaid', 'dateJoined', 'planValidity'];
-    for (let field of requiredFields) {
-      if (!formData[field]) {
-        alert(`Please fill out the ${field} field.`);
-        return;
-      }
+  const requiredFields = ['fullName', 'mobile', 'moneyPaid', 'dateJoined', 'planValidity'];
+  for (let field of requiredFields) {
+    if (!formData[field]) {
+      alert(`Please fill out the ${field} field.`);
+      return;
+    }
+  }
+
+  try {
+    const stored = localStorage.getItem('businessOwner');
+    const owner = stored ? JSON.parse(stored) : null;
+    const token = owner?.token;
+
+    console.log('📦 token:', token);
+    if (!token) {
+      alert('You are not logged in. Please login again.');
+      return;
     }
 
+    const dataToSend = {
+      fullName: formData.fullName,
+      mobile: formData.mobile,
+      email: formData.email || '',
+      moneyPaid: formData.moneyPaid,
+      dateJoined: formData.dateJoined,
+      planValidity: formData.planValidity,
+    };
+
+    console.log('📤 Sending data:', dataToSend);
+
+    const response = await fetch('https://backend-3iv8.onrender.com/api/members', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(dataToSend),
+    });
+
+    let responseData;
     try {
-      const owner = JSON.parse(localStorage.getItem('businessOwner'));
-      const token = owner?.token;
-
-      if (!token) {
-        alert('You are not logged in. Please login again.');
-        return;
-      }
-
-      const dataToSend = {
-        fullName: formData.fullName,
-        mobile: formData.mobile,
-        email: formData.email || '', // ✅ default to empty string if optional
-        moneyPaid: formData.moneyPaid,
-        dateJoined: formData.dateJoined,
-        planValidity: formData.planValidity,
-      };
-
-      console.log('Sending to server:', dataToSend); // ✅ Debug log
-
-      const response = await fetch('https://backend-3iv8.onrender.com/api/members', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(dataToSend),
-      });
-
-      const responseData = await response.json();
-      console.log('Server Response:', responseData);
-
-      if (response.ok) {
-        alert('Member registered successfully');
-        setFormData({
-          fullName: '',
-          mobile: '',
-          email: '',
-          moneyPaid: '',
-          dateJoined: '',
-          planValidity: '',
-        });
-      } else {
-        alert('Registration failed: ' + (responseData.message || 'Unknown error'));
-      }
-    } catch (error) {
-      console.error('Client-side Error:', error);
-      alert('An error occurred: ' + error.message);
+      responseData = await response.json();
+    } catch (err) {
+      console.error('❌ Failed to parse JSON from server:', err);
+      alert('Server did not return valid JSON.');
+      return;
     }
-  };
+
+    console.log('✅ Server Response:', responseData);
+
+    if (response.ok) {
+      alert('Member registered successfully');
+      setFormData({
+        fullName: '',
+        mobile: '',
+        email: '',
+        moneyPaid: '',
+        dateJoined: '',
+        planValidity: '',
+      });
+    } else {
+      alert('Registration failed: ' + (responseData.message || 'Unknown error'));
+    }
+  } catch (error) {
+    console.error('Client-side Error:', error);
+    alert('An error occurred: ' + error.message);
+  }
+};
+
 
   const fields = [
     { label: 'Full Name', name: 'fullName', type: 'text', required: true },
