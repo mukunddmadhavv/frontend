@@ -19,6 +19,15 @@ const RegistrationForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // ✅ Validate all required fields before sending
+    const requiredFields = ['fullName', 'mobile', 'moneyPaid', 'dateJoined', 'planValidity'];
+    for (let field of requiredFields) {
+      if (!formData[field]) {
+        alert(`Please fill out the ${field} field.`);
+        return;
+      }
+    }
+
     try {
       const owner = JSON.parse(localStorage.getItem('businessOwner'));
       const token = owner?.token;
@@ -31,11 +40,13 @@ const RegistrationForm = () => {
       const dataToSend = {
         fullName: formData.fullName,
         mobile: formData.mobile,
-        email: formData.email,
+        email: formData.email || '', // ✅ default to empty string if optional
         moneyPaid: formData.moneyPaid,
         dateJoined: formData.dateJoined,
         planValidity: formData.planValidity,
       };
+
+      console.log('Sending to server:', dataToSend); // ✅ Debug log
 
       const response = await fetch('https://backend-3iv8.onrender.com/api/members', {
         method: 'POST',
@@ -60,7 +71,7 @@ const RegistrationForm = () => {
           planValidity: '',
         });
       } else {
-        alert('Registration failed: ' + responseData.message);
+        alert('Registration failed: ' + (responseData.message || 'Unknown error'));
       }
     } catch (error) {
       console.error('Client-side Error:', error);
