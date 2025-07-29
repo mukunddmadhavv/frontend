@@ -20,11 +20,9 @@ const RegistrationForm = () => {
     e.preventDefault();
 
     try {
-      const owner = JSON.parse(localStorage.getItem('businessOwner'));
-      const token = owner?.token;
-      const businessOwner = owner?.id;
+      const token = localStorage.getItem('token');
 
-      if (!token || !businessOwner) {
+      if (!token) {
         alert('You are not logged in. Please login again.');
         return;
       }
@@ -36,7 +34,6 @@ const RegistrationForm = () => {
         moneyPaid: formData.moneyPaid,
         dateJoined: formData.dateJoined,
         planValidity: formData.planValidity,
-        businessOwner: businessOwner,
       };
 
       const response = await fetch('https://backend-3iv8.onrender.com/api/members', {
