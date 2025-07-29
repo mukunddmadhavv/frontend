@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { parseISO, differenceInDays, addDays } from 'date-fns';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import Navbar from '../components/Navbar';
 import axios from 'axios';
-import { parseISO, differenceInDays, addDays, format } from 'date-fns';
-
 
 const calculatePlanEnd = (joined, validity) => {
   const daysMap = {
@@ -17,6 +16,8 @@ const calculatePlanEnd = (joined, validity) => {
   const start = parseISO(joined);
   return addDays(start, daysToAdd);
 };
+
+
 
 const Members = () => {
   const [members, setMembers] = useState([]);
@@ -36,17 +37,21 @@ const Members = () => {
 
   const today = new Date();
 
-  const enriched = members
+   const enriched = members
     .map((member) => {
       const planEndsOn = calculatePlanEnd(member.dateJoined, member.planValidity);
       const daysLeft = differenceInDays(planEndsOn, today);
+      const daysAfterExpiry = differenceInDays(today, planEndsOn);
       return {
         ...member,
-        planEndsOn: format(planEndsOn, 'dd/MM/yyyy'),
+        planEndsOn: planEndsOn.toISOString().split('T')[0],
         daysLeft,
+        hideAfter7Days: daysAfterExpiry > 7, // true if expired more than 7 days ago
       };
     })
+    .filter((member) => !member.hideAfter7Days) // remove those expired more than 7 days ago
     .sort((a, b) => a.daysLeft - b.daysLeft);
+
 
   const getBadgeStyle = (daysLeft) => {
     if (daysLeft < 0) {
