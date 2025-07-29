@@ -45,6 +45,35 @@ const Login = () => {
           style={styles.input}
         />
         <button type="submit" style={styles.button}>Login</button>
+        <div
+  style={{
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'baseline',
+    gap: '10px',
+    marginTop: '20px',
+  }}
+>
+  <span style={{ color: '#fff', fontSize: '14px' }}>
+    Not registered yet?
+  </span>
+  <button
+    type="button"
+    onClick={() => navigate('/signup')}
+    style={{
+      backgroundColor: '#28a745',
+      color: '#fff',
+      border: 'none',
+      borderRadius: '6px',
+      fontFamily: 'Plus Jakarta Sans, sans-serif',
+      padding: '6px 12px',
+      fontSize: '14px',
+      cursor: 'pointer',
+    }}
+  ><strong>Sign Up</strong></button>
+  
+</div>
+
       </form>
     </div>
     </>
@@ -57,8 +86,10 @@ const styles = {
     background: 'linear-gradient(180deg, #083ca0,black)',
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center',
-    padding: '20px',
+    alignItems: 'baseline',
+    paddingTop: '160px',
+    paddingLeft: '20px',
+    paddingRight: '20px',
   },
   form: {
     backgroundColor: '#ffffff10',
