@@ -14,7 +14,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await API.post('/auth/login', form);
-      localStorage.setItem('owner', JSON.stringify(res.data.owner));
+           localStorage.setItem('user', JSON.stringify(res.data.owner));
       navigate('/');
     } catch (err) {
       alert(err.response?.data?.message || 'Login failed');
