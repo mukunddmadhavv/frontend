@@ -26,7 +26,7 @@ const RegistrationForm = () => {
 
     try {
       const { profilePic, ...dataWithoutProfile } = formData;
-const user = JSON.parse(localStorage.getItem('businessOwner'));
+const user = JSON.parse(localStorage.getItem('user'));
 
 if (!user?._id) {
   alert("Please login again.");
