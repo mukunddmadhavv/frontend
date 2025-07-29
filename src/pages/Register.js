@@ -22,53 +22,49 @@ const RegistrationForm = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const { profilePic, ...dataWithoutProfile } = formData;
-const user = JSON.parse(localStorage.getItem('businessOwner'));
+  try {
+    const token = JSON.parse(localStorage.getItem('businessOwner'))?.token;
+    if (!token) {
+      alert('You are not logged in. Please login again.');
+      return;
+    }
 
-if (!user?._id) {
-  alert("Please login again.");
-  return;
-}
+    const { profilePic, ...dataWithoutProfile } = formData;
 
-const memberData = {
-  ...dataWithoutProfile,
-  businessOwner: user._id, // 👈 attach owner ID
+    const response = await fetch('https://backend-3iv8.onrender.com/api/members', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`, // ✅ Add token
+      },
+      body: JSON.stringify(dataWithoutProfile), // ✅ Safe JSON stringify
+    });
+
+    const responseData = await response.json();
+    console.log('Server Response:', responseData);
+
+    if (response.ok) {
+      alert('Member registered successfully');
+      setFormData({
+        fullName: '',
+        mobile: '',
+        email: '',
+        moneyPaid: '',
+        profilePic: null,
+        dateJoined: '',
+        planValidity: '',
+      });
+    } else {
+      alert('Registration failed: ' + responseData.message);
+    }
+  } catch (error) {
+    console.error('Client-side Error:', error);
+    alert('An error occurred: ' + error.message);
+  }
 };
 
-const response = await fetch('https://backend-3iv8.onrender.com/api/members', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify(memberData),
-});
-
-
-      const responseData = await response.json();
-      console.log('Server Response:', responseData);
-
-      if (response.ok) {
-        alert('Member registered successfully');
-        setFormData({
-          fullName: '',
-          mobile: '',
-          email: '',
-          moneyPaid: '',
-          profilePic: null,
-          dateJoined: '',
-          planValidity: '',
-        });
-      } else {
-        alert('Registration failed: ' + responseData.message);
-      }
-    } catch (error) {
-      console.error('Client-side Error:', error);
-      alert('An error occurred: ' + error.message);
-    }
-  };
 
   const fields = [
     { label: 'Full Name', name: 'fullName', type: 'text', required: true },
