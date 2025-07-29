@@ -25,7 +25,7 @@ const Members = () => {
   useEffect(() => {
   const fetchMembers = async () => {
     try {
-      const user = JSON.parse(localStorage.getItem('user'));
+      localStorage.setItem('businessOwner', JSON.stringify(response.data.owner));
 
       if (!user?._id) {
         alert("Please login again.");
