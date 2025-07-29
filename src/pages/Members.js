@@ -22,11 +22,11 @@ const Members = () => {
 
   useEffect(() => {
     const fetchMembers = async () => {
-      const ownerMobile = localStorage.getItem('ownerMobile');
+const businessOwner = localStorage.getItem('businessOwner');
       if (!ownerMobile) return;
 
       try {
-        const res = await axios.get(`https://backend-3iv8.onrender.com/api/members/${ownerMobile}`);
+const res = await axios.get(`https://backend-3iv8.onrender.com/api/members/${businessOwner}`);
         setMembers(res.data);
       } catch (error) {
         console.error('Failed to fetch members:', error);
