@@ -10,24 +10,30 @@ const Earnings = () => {
   const [expandedMonth, setExpandedMonth] = useState(null);
 
   useEffect(() => {
-  const fetchMembers = async () => {
-    try {
-      const ownerId = localStorage.getItem('ownerId');
-      const response = await fetch(`https://backend-3iv8.onrender.com/api/members/${ownerId}`);
-      const data = await response.json();
-      setRegisteredMembers(data);
-    } catch (err) {
-      setError('Failed to fetch members');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const fetchMembers = async () => {
+      try {
+        // ✅ Get owner ID from localStorage (after login, store full owner object)
+        const owner = JSON.parse(localStorage.getItem('owner'));
 
-  fetchMembers();
-}, []);
+        if (!owner || !owner._id) {
+          setError('Business owner not logged in');
+          setLoading(false);
+          return;
+        }
 
+        const response = await fetch(`https://backend-3iv8.onrender.com/api/members/${owner._id}`);
+        const data = await response.json();
+        setRegisteredMembers(data);
+      } catch (err) {
+        setError('Failed to fetch members');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchMembers();
+  }, []);
 
   // Organize earnings and members by month
   const earningsData = registeredMembers.reduce((acc, member) => {
@@ -48,26 +54,26 @@ const Earnings = () => {
   };
 
   if (loading)
-  return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        background: 'white',
-      }}
-    >
-      <DotLottieReact
-        src="https://lottie.host/fbc8bd46-75dc-4589-8516-96e479c3b81a/0ho87SHNau.lottie"
-        loop
-        autoplay
-        style={{ width: '120px', height: '120px' }}
-      />
-    </div>
-  );
+    return (
+      <div
+        style={{
+          height: '100vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          background: 'white',
+        }}
+      >
+        <DotLottieReact
+          src="https://lottie.host/fbc8bd46-75dc-4589-8516-96e479c3b81a/0ho87SHNau.lottie"
+          loop
+          autoplay
+          style={{ width: '120px', height: '120px' }}
+        />
+      </div>
+    );
 
-  if (error) return <div>{error}</div>;
+  if (error) return <div style={{ padding: '20px' }}>{error}</div>;
 
   return (
     <>
