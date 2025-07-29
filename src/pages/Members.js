@@ -32,7 +32,12 @@ const user = JSON.parse(localStorage.getItem('businessOwner'));
         return;
       }
 
-      const res = await axios.get(`https://backend-3iv8.onrender.com/api/members/${user._id}`);
+const res = await axios.get('https://backend-3iv8.onrender.com/api/members', {
+  headers: {
+    Authorization: `Bearer ${user.token}`,
+  },
+});
+
       setMembers(res.data);
     } catch (error) {
       console.error('Failed to fetch members:', error);
