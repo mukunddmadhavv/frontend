@@ -8,7 +8,7 @@ import Register from './pages/Register';
 import Members from './pages/Members';
 import Earnings from './pages/Earnings';
 import Notifications from './pages/Notifications';
-
+import SignupLogin from './pages/SignupLogin';
 
 
 function App() {
@@ -20,6 +20,8 @@ function App() {
         <Route path="/members" element={<Members />} />
         <Route path="/earnings" element={<Earnings />} />
         <Route path="/notifications" element={<Notifications />} />
+        <Route path="/signup" element={<SignupLogin />} />
+
 
 
         
