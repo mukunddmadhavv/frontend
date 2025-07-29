@@ -12,15 +12,19 @@ const Login = () => {
   };
 
   const handleSubmit = async e => {
-    e.preventDefault();
-    try {
-      const res = await API.post('/auth/login', form);
-      localStorage.setItem('user', JSON.stringify(res.data.owner));
-      navigate('/');
-    } catch (err) {
-      alert(err.response?.data?.message || 'Login failed');
-    }
-  };
+  e.preventDefault();
+  try {
+    const res = await API.post('/auth/login', form);
+    
+    // ✅ Store using the key 'businessOwner'
+    localStorage.setItem('businessOwner', JSON.stringify(res.data.owner));
+
+    // ✅ Navigate to the home page
+    navigate('/');
+  } catch (err) {
+    alert(err.response?.data?.message || 'Login failed');
+  }
+};
 
   return (
     <>
