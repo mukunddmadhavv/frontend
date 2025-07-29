@@ -21,12 +21,16 @@ const RegistrationForm = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  
+      const handleSubmit = async (e) => {
   e.preventDefault();
 
   try {
-    const token = JSON.parse(localStorage.getItem('businessOwner'))?.token;
-    if (!token) {
+    const owner = JSON.parse(localStorage.getItem('businessOwner'));
+    const token = owner?.token;
+    const businessOwner = owner?.id;
+
+    if (!token || !businessOwner) {
       alert('You are not logged in. Please login again.');
       return;
     }
@@ -37,9 +41,12 @@ const RegistrationForm = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`, // ✅ Add token
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(dataWithoutProfile), // ✅ Safe JSON stringify
+      body: JSON.stringify({
+        ...dataWithoutProfile,
+        businessOwner, // ✅ Add this
+      }),
     });
 
     const responseData = await response.json();
@@ -64,6 +71,7 @@ const RegistrationForm = () => {
     alert('An error occurred: ' + error.message);
   }
 };
+
 
 
   const fields = [
