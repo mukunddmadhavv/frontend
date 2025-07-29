@@ -16,9 +16,11 @@ const Login = () => {
     try {
       const res = await API.post('/auth/login', form);
 
-      // ✅ Save token + businessOwner info
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('businessOwner', JSON.stringify(res.data.businessOwner));
+     localStorage.setItem(
+  'businessOwner',
+  JSON.stringify({ ...res.data.businessOwner, token: res.data.token })
+);
+
 
       // ✅ Navigate to home
       navigate('/');
