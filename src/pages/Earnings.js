@@ -252,6 +252,19 @@ const Earnings = () => {
               </div>
             </div>
           )}
+
+<h3
+  style={{
+    textAlign: 'center',
+    marginBottom: '24px',
+    color: '#333',
+    fontWeight: 600,
+  }}
+>
+  Total Earnings: ₹ {totalEarnings}
+</h3>
+
+
         </div>
 
         <h3
