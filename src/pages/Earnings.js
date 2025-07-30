@@ -97,6 +97,15 @@ const Earnings = () => {
       );
     }
 
+    if (filterType === 'thisYear') {
+  const from = new Date(new Date().getFullYear(), 0, 1); // Jan 1 of current year
+  const to = new Date(); // today
+  return registeredMembers.filter(member =>
+    isWithinInterval(parseISO(member.dateJoined), { start: from, end: to })
+  );
+}
+
+
     return registeredMembers;
   };
 
@@ -200,10 +209,11 @@ const Earnings = () => {
               }}
             >
               <option value="all">All Time</option>
-              <option value="financial">This Financial Year</option>
-              <option value="last6">Last 6 Months</option>
-              <option value="last3">Last 3 Months</option>
+              <option value="thisYear">This Year</option>
               <option value="last1">Last 1 Month</option>
+              <option value="last3">Last 3 Months</option>
+              <option value="last6">Last 6 Months</option>
+              <option value="financial">This Financial Year</option>
               <option value="custom">Custom Month Range</option>
             </select>
           </label>
