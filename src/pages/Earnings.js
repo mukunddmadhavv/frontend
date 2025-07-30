@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import { parseISO, format } from 'date-fns';
+import { parseISO, format, subMonths, isWithinInterval, startOfMonth, endOfMonth } from 'date-fns';
 import Navbar from '../components/Navbar';
 
 const Earnings = () => {
@@ -8,7 +8,9 @@ const Earnings = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [expandedMonth, setExpandedMonth] = useState(null);
-  const [selectedMonths, setSelectedMonths] = useState([]);
+  const [filterType, setFilterType] = useState('all');
+  const [fromMonth, setFromMonth] = useState('');
+  const [toMonth, setToMonth] = useState('');
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -54,24 +56,64 @@ const Earnings = () => {
     setExpandedMonth(expandedMonth === month ? null : month);
   };
 
-  const handleFilterChange = (e) => {
-    const { value, checked } = e.target;
-    setSelectedMonths((prev) =>
-      checked ? [...prev, value] : prev.filter((m) => m !== value)
-    );
+  const getFilteredMembers = () => {
+    const now = new Date();
+
+    if (filterType === 'financial') {
+      const year = now.getMonth() < 3 ? now.getFullYear() - 1 : now.getFullYear();
+      const from = new Date(year, 3, 1); // April 1
+      const to = new Date(year + 1, 2, 31); // March 31
+      return registeredMembers.filter(member =>
+        isWithinInterval(parseISO(member.dateJoined), { start: from, end: to })
+      );
+    }
+
+    if (filterType === 'last6') {
+      const from = subMonths(now, 6);
+      return registeredMembers.filter(member =>
+        isWithinInterval(parseISO(member.dateJoined), { start: from, end: now })
+      );
+    }
+
+    if (filterType === 'last3') {
+      const from = subMonths(now, 3);
+      return registeredMembers.filter(member =>
+        isWithinInterval(parseISO(member.dateJoined), { start: from, end: now })
+      );
+    }
+
+    if (filterType === 'last1') {
+      const from = subMonths(now, 1);
+      return registeredMembers.filter(member =>
+        isWithinInterval(parseISO(member.dateJoined), { start: from, end: now })
+      );
+    }
+
+    if (filterType === 'custom' && fromMonth && toMonth) {
+      const from = startOfMonth(new Date(fromMonth));
+      const to = endOfMonth(new Date(toMonth));
+      return registeredMembers.filter(member =>
+        isWithinInterval(parseISO(member.dateJoined), { start: from, end: to })
+      );
+    }
+
+    return registeredMembers;
   };
 
-  const filteredMembers = selectedMonths.length === 0
-    ? registeredMembers
-    : registeredMembers.filter((member) => {
-        const monthYear = format(parseISO(member.dateJoined), 'MMMM yyyy');
-        return selectedMonths.includes(monthYear);
-      });
+  const filteredMembers = getFilteredMembers();
 
   const totalEarnings = filteredMembers.reduce(
     (sum, member) => sum + Number(member.moneyPaid),
     0
   );
+
+  const allMonthOptions = Array.from(
+    new Set(
+      registeredMembers.map((m) =>
+        format(parseISO(m.dateJoined), 'yyyy-MM-01')
+      )
+    )
+  ).sort();
 
   if (loading)
     return (
@@ -135,7 +177,7 @@ const Earnings = () => {
           </h2>
         </div>
 
-        {/* ✅ Month Filter */}
+        {/* ✅ Filter Options */}
         <div
           style={{
             maxWidth: '600px',
@@ -143,23 +185,63 @@ const Earnings = () => {
             backgroundColor: '#f7f7f7',
             padding: '16px',
             borderRadius: '12px',
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '10px',
           }}
         >
-          {sortedMonths.map((month) => (
-            <label key={month} style={{ fontSize: '14px' }}>
-              <input
-                type="checkbox"
-                value={month}
-                checked={selectedMonths.includes(month)}
-                onChange={handleFilterChange}
-                style={{ marginRight: '6px' }}
-              />
-              {month}
-            </label>
-          ))}
+          <label style={{ fontSize: '14px', marginBottom: '8px', display: 'block' }}>
+            Filter by:
+            <select
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value)}
+              style={{
+                marginLeft: '10px',
+                padding: '6px 10px',
+                fontSize: '14px',
+                borderRadius: '6px',
+              }}
+            >
+              <option value="all">All Time</option>
+              <option value="financial">This Financial Year</option>
+              <option value="last6">Last 6 Months</option>
+              <option value="last3">Last 3 Months</option>
+              <option value="last1">Last 1 Month</option>
+              <option value="custom">Custom Month Range</option>
+            </select>
+          </label>
+
+          {filterType === 'custom' && (
+            <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+              <div>
+                <label style={{ fontSize: '13px' }}>From</label>
+                <select
+                  value={fromMonth}
+                  onChange={(e) => setFromMonth(e.target.value)}
+                  style={{ padding: '6px', borderRadius: '6px' }}
+                >
+                  <option value="">--</option>
+                  {allMonthOptions.map((m) => (
+                    <option key={m} value={m}>
+                      {format(new Date(m), 'MMMM yyyy')}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label style={{ fontSize: '13px' }}>To</label>
+                <select
+                  value={toMonth}
+                  onChange={(e) => setToMonth(e.target.value)}
+                  style={{ padding: '6px', borderRadius: '6px' }}
+                >
+                  <option value="">--</option>
+                  {allMonthOptions.map((m) => (
+                    <option key={m} value={m}>
+                      {format(new Date(m), 'MMMM yyyy')}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
         </div>
 
         <h3
