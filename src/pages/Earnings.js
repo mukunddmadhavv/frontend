@@ -182,7 +182,7 @@ const Earnings = () => {
               marginLeft: '10px',
             }}
           >
-            Monthly Earnings
+          Earnings
           </h2>
         </div>
 
