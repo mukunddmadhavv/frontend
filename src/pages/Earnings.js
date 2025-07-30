@@ -8,6 +8,7 @@ const Earnings = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [expandedMonth, setExpandedMonth] = useState(null);
+  const [selectedMonths, setSelectedMonths] = useState([]);
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -53,6 +54,25 @@ const Earnings = () => {
     setExpandedMonth(expandedMonth === month ? null : month);
   };
 
+  const handleFilterChange = (e) => {
+    const { value, checked } = e.target;
+    setSelectedMonths((prev) =>
+      checked ? [...prev, value] : prev.filter((m) => m !== value)
+    );
+  };
+
+  const filteredMembers = selectedMonths.length === 0
+    ? registeredMembers
+    : registeredMembers.filter((member) => {
+        const monthYear = format(parseISO(member.dateJoined), 'MMMM yyyy');
+        return selectedMonths.includes(monthYear);
+      });
+
+  const totalEarnings = filteredMembers.reduce(
+    (sum, member) => sum + Number(member.moneyPaid),
+    0
+  );
+
   if (loading)
     return (
       <div
@@ -74,11 +94,6 @@ const Earnings = () => {
     );
 
   if (error) return <div style={{ padding: '20px' }}>{error}</div>;
-
-  const totalEarnings = registeredMembers.reduce(
-    (sum, member) => sum + Number(member.moneyPaid),
-    0
-  );
 
   return (
     <>
@@ -118,6 +133,33 @@ const Earnings = () => {
           >
             Monthly Earnings
           </h2>
+        </div>
+
+        {/* ✅ Month Filter */}
+        <div
+          style={{
+            maxWidth: '600px',
+            margin: '0 auto 20px auto',
+            backgroundColor: '#f7f7f7',
+            padding: '16px',
+            borderRadius: '12px',
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '10px',
+          }}
+        >
+          {sortedMonths.map((month) => (
+            <label key={month} style={{ fontSize: '14px' }}>
+              <input
+                type="checkbox"
+                value={month}
+                checked={selectedMonths.includes(month)}
+                onChange={handleFilterChange}
+                style={{ marginRight: '6px' }}
+              />
+              {month}
+            </label>
+          ))}
         </div>
 
         <h3
