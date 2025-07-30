@@ -16,13 +16,10 @@ const Login = () => {
     try {
       const res = await API.post('/auth/login', form);
 
-     localStorage.setItem(
-  'businessOwner',
-  JSON.stringify({ ...res.data.businessOwner, token: res.data.token })
-);
+      // ✅ Save logged-in business owner info (no token used anymore)
+      localStorage.setItem('businessOwner', JSON.stringify(res.data.owner));
 
-
-      // ✅ Navigate to home
+      // ✅ Navigate to home page
       navigate('/');
     } catch (err) {
       alert(err.response?.data?.message || 'Login failed');
