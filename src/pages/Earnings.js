@@ -12,16 +12,17 @@ const Earnings = () => {
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        // ✅ Get owner ID from localStorage (after login, store full owner object)
-        const owner = JSON.parse(localStorage.getItem('owner'));
+        const owner = JSON.parse(localStorage.getItem('businessOwner'));
 
-        if (!owner || !owner._id) {
+        if (!owner || !owner.mobile) {
           setError('Business owner not logged in');
           setLoading(false);
           return;
         }
 
-        const response = await fetch(`https://backend-3iv8.onrender.com/api/members/${owner._id}`);
+        const response = await fetch(
+          `https://backend-3iv8.onrender.com/api/members?ownerMobile=${owner.mobile}`
+        );
         const data = await response.json();
         setRegisteredMembers(data);
       } catch (err) {
@@ -35,7 +36,6 @@ const Earnings = () => {
     fetchMembers();
   }, []);
 
-  // Organize earnings and members by month
   const earningsData = registeredMembers.reduce((acc, member) => {
     const date = parseISO(member.dateJoined);
     const monthYear = format(date, 'MMMM yyyy');
@@ -45,9 +45,9 @@ const Earnings = () => {
     return acc;
   }, {});
 
-  const sortedMonths = Object.keys(earningsData).sort(
-    (a, b) => new Date(a) - new Date(b)
-  );
+  const sortedMonths = Object.keys(earningsData).sort((a, b) => {
+    return new Date(`1 ${a}`) - new Date(`1 ${b}`);
+  });
 
   const toggleMonth = (month) => {
     setExpandedMonth(expandedMonth === month ? null : month);
@@ -74,6 +74,11 @@ const Earnings = () => {
     );
 
   if (error) return <div style={{ padding: '20px' }}>{error}</div>;
+
+  const totalEarnings = registeredMembers.reduce(
+    (sum, member) => sum + Number(member.moneyPaid),
+    0
+  );
 
   return (
     <>
@@ -108,11 +113,23 @@ const Earnings = () => {
               fontWeight: '700',
               color: '#083ca0',
               margin: 0,
+              marginLeft: '10px',
             }}
           >
             Monthly Earnings
           </h2>
         </div>
+
+        <h3
+          style={{
+            textAlign: 'center',
+            marginBottom: '24px',
+            color: '#333',
+            fontWeight: 600,
+          }}
+        >
+          Total Earnings: ₹ {totalEarnings}
+        </h3>
 
         <div
           style={{
