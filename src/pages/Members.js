@@ -22,21 +22,19 @@ const calculatePlanEnd = (joined, validity) => {
 const Members = () => {
   const [members, setMembers] = useState([]);
 
-  useEffect(() => {
+ useEffect(() => {
   const fetchMembers = async () => {
     try {
-const user = JSON.parse(localStorage.getItem('businessOwner'));
+      const user = JSON.parse(localStorage.getItem('businessOwner'));
 
-      if (!user?._id) {
+      if (!user?.mobile) {
         alert("Please login again.");
         return;
       }
 
-const res = await axios.get('https://backend-3iv8.onrender.com/api/members', {
-  headers: {
-    Authorization: `Bearer ${user.token}`,
-  },
-});
+      const res = await axios.get('https://backend-3iv8.onrender.com/api/members', {
+        params: { ownerMobile: user.mobile }, // ✅ Send ownerMobile as query param
+      });
 
       setMembers(res.data);
     } catch (error) {
@@ -46,6 +44,7 @@ const res = await axios.get('https://backend-3iv8.onrender.com/api/members', {
 
   fetchMembers();
 }, []);
+
 
 
   const today = new Date();
