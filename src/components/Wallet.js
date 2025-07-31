@@ -28,6 +28,35 @@ const Wallet = () => {
     fetchMembers();
   }, []);
 
+
+
+  useEffect(() => {
+  const style = document.createElement('style');
+  style.innerHTML = `
+    @keyframes colorShiftGlow {
+      0% {
+        box-shadow: 0 0 12px #fbbf24;
+      }
+      33% {
+        box-shadow: 0 0 12px #f59e0b;
+      }
+      66% {
+        box-shadow: 0 0 12px #fcd34d;
+      }
+      100% {
+        box-shadow: 0 0 12px #fbbf24;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Optional cleanup
+  return () => {
+    document.head.removeChild(style);
+  };
+}, []);
+
+
   const now = new Date();
 
   const currentMonthMembers = members.filter((member) =>
@@ -54,17 +83,18 @@ const Wallet = () => {
 
   return (
     <div
-      style={{
-        maxWidth: '400px',
-        margin: '10px',
-        padding: '24px',
-        borderRadius: '20px',
-        background: 'linear-gradient(180deg, #FDE68A, #F59E0B)',
-        color: '#4B3209',
-        fontFamily: 'Plus Jakarta Sans, sans-serif',
-        boxShadow: '0 10px 20px rgba(0,0,0,0.1)',
-      }}
-    >
+  style={{
+    maxWidth: '400px',
+    margin: '10px',
+    padding: '24px',
+    borderRadius: '20px',
+    background: 'linear-gradient(180deg, #FDE68A, #F59E0B)',
+    color: '#4B3209',
+    fontFamily: 'Plus Jakarta Sans, sans-serif',
+    animation: 'colorShiftGlow 5s ease-in-out infinite',
+  }}
+>
+
       <h3 style={{ fontSize: '22px', margin: 'auto',           fontFamily: 'Plus Jakarta Sans, sans-serif',fontWeight:600}}>💰Monthly Overview</h3>
       <p style={{ fontSize: '16px', margin: '8px 0' ,  fontFamily: 'Plus Jakarta Sans, sans-serif',fontWeight:600}}>
         Earnings :<strong> ₹ {currentMonthEarnings}</strong>
