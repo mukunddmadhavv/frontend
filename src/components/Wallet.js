@@ -43,7 +43,7 @@ const Wallet = () => {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', padding: '30px' }}>
         <DotLottieReact
-          src="https://lottie.host/7141fd90-6691-4cbf-83b8-601781545453/Y1F6Kna5lq.lottie"
+          src="https://lottie.host/d8e97e0b-0dd7-4d00-a37f-828f989e9297/87ZlTWq9VV.lottie"
           loop
           autoplay
           style={{ width: '100px', height: '100px' }}
