@@ -56,7 +56,7 @@ const Wallet = () => {
     <div
       style={{
         maxWidth: '400px',
-        margin: '20px auto',
+        margin: '10px',
         padding: '24px',
         borderRadius: '20px',
         background: 'linear-gradient(135deg, #FDE68A, #F59E0B)',
