@@ -22,7 +22,7 @@ const Navbar = () => {
       paddingLeft: '20px',
       paddingTop: '10px',
       paddingRight: '10px',
-      paddingBottom: '0px',
+      paddingBottom: '10px',
       width: '100%',
       boxSizing: 'border-box',
       backgroundColor: '#ffffff',
