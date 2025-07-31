@@ -6,6 +6,7 @@ const Wallet = () => {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [animatedEarnings, setAnimatedEarnings] = useState(0);
+  const [animatedMembers, setAnimatedMembers] = useState(0);
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -37,23 +38,27 @@ const Wallet = () => {
         66% { box-shadow: 0 0 12px #fcd34d; }
         100% { box-shadow: 0 0 12px #fbbf24; }
       }
+
+      @keyframes sparkle {
+        0% { opacity: 0; transform: scale(0.5) translateY(0); }
+        50% { opacity: 1; transform: scale(1) translateY(-10px); }
+        100% { opacity: 0; transform: scale(0.5) translateY(0); }
+      }
     `;
     document.head.appendChild(style);
     return () => document.head.removeChild(style);
   }, []);
 
   const now = new Date();
-
   const currentMonthMembers = members.filter((member) =>
     isSameMonth(parseISO(member.dateJoined), now)
   );
-
   const currentMonthEarnings = currentMonthMembers.reduce(
     (sum, m) => sum + Number(m.moneyPaid),
     0
   );
 
-  // Counter animation for earnings
+  // Animate earnings
   useEffect(() => {
     const duration = 1000;
     const startTime = performance.now();
@@ -61,15 +66,27 @@ const Wallet = () => {
     const animate = (currentTime) => {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      const value = Math.floor(progress * currentMonthEarnings);
-      setAnimatedEarnings(value);
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      }
+      setAnimatedEarnings(Math.floor(progress * currentMonthEarnings));
+      if (progress < 1) requestAnimationFrame(animate);
     };
 
     requestAnimationFrame(animate);
   }, [currentMonthEarnings]);
+
+  // Animate members
+  useEffect(() => {
+    const duration = 1000;
+    const startTime = performance.now();
+
+    const animate = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      setAnimatedMembers(Math.floor(progress * currentMonthMembers.length));
+      if (progress < 1) requestAnimationFrame(animate);
+    };
+
+    requestAnimationFrame(animate);
+  }, [currentMonthMembers.length]);
 
   if (loading) {
     return (
@@ -83,6 +100,33 @@ const Wallet = () => {
       </div>
     );
   }
+
+  const renderStars = () => {
+    return Array.from({ length: 30 }).map((_, i) => {
+      const size = Math.random() * 4 + 2;
+      const duration = Math.random() * 3 + 2;
+      const left = Math.random() * 100;
+      const top = Math.random() * 100;
+      const delay = Math.random() * 5;
+
+      return (
+        <div
+          key={i}
+          style={{
+            position: 'absolute',
+            width: `${size}px`,
+            height: `${size}px`,
+            borderRadius: '50%',
+            backgroundColor: '#ffffffaa',
+            left: `${left}%`,
+            top: `${top}%`,
+            animation: `sparkle ${duration}s ease-in-out ${delay}s infinite`,
+            pointerEvents: 'none',
+          }}
+        />
+      );
+    });
+  };
 
   return (
     <div
@@ -99,33 +143,21 @@ const Wallet = () => {
         overflow: 'hidden',
       }}
     >
-      <h3
-        style={{
-          fontSize: '22px',
-          margin: 'auto',
-          fontWeight: 600,
-        }}
-      >
-        💰 Monthly Overview
-      </h3>
-      <p
-        style={{
-          fontSize: '16px',
-          margin: '8px 0',
-          fontWeight: 600,
-        }}
-      >
-        Earnings : <strong>₹ {animatedEarnings.toLocaleString()}</strong>
-      </p>
-      <p
-        style={{
-          fontSize: '16px',
-          margin: '8px 0',
-          fontWeight: 600,
-        }}
-      >
-        Members : <strong>{currentMonthMembers.length}</strong>
-      </p>
+      {/* Sparkling background stars */}
+      {renderStars()}
+
+      {/* Foreground content */}
+      <div style={{ position: 'relative', zIndex: 1 }}>
+        <h3 style={{ fontSize: '22px', margin: 'auto', fontWeight: 600 }}>
+          💰 Monthly Overview
+        </h3>
+        <p style={{ fontSize: '16px', margin: '8px 0', fontWeight: 600 }}>
+          Earnings : <strong>₹ {animatedEarnings.toLocaleString()}</strong>
+        </p>
+        <p style={{ fontSize: '16px', margin: '8px 0', fontWeight: 600 }}>
+          Members : <strong>{animatedMembers}</strong>
+        </p>
+      </div>
     </div>
   );
 };
