@@ -2,6 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { parseISO, addDays, isBefore } from 'date-fns';
 
+const planOptions = [
+  { label: '15 Days', value: '15 days' },
+  { label: '1 Month', value: '1 month' },
+  { label: '3 Months', value: '3 months' },
+  { label: '6 Months', value: '6 months' },
+];
+
 const ExpiredMembers = () => {
   const [members, setMembers] = useState([]);
   const [expiredMembers, setExpiredMembers] = useState([]);
@@ -21,9 +28,8 @@ const ExpiredMembers = () => {
 
   useEffect(() => {
     const now = new Date();
-
-    // Group members by fullName + mobile + ownerMobile + email
     const grouped = {};
+
     members.forEach((member) => {
       const key = `${member.fullName}_${member.mobile}_${member.ownerMobile}_${member.email}`;
       if (!grouped[key]) grouped[key] = [];
@@ -37,7 +43,8 @@ const ExpiredMembers = () => {
         new Date(a.dateJoined) > new Date(b.dateJoined) ? a : b
       );
       const joinDate = parseISO(latest.dateJoined);
-      const expiryDate = addDays(joinDate, parseInt(latest.planValidity));
+      const days = parseInt(latest.planValidity) || 0;
+      const expiryDate = addDays(joinDate, days);
 
       if (isBefore(expiryDate, now)) {
         expiredList.push(latest);
@@ -116,15 +123,10 @@ const ExpiredMembers = () => {
 
             {expandedId === member._id && (
               <div style={{ marginTop: '15px' }}>
-                <p>
-                  <strong>Mobile:</strong> {member.mobile}
-                </p>
-                <p>
-                  <strong>Email:</strong> {member.email}
-                </p>
-                <p>
-                  <strong>Last Paid:</strong> ₹ {member.moneyPaid}
-                </p>
+                <p><strong>Mobile:</strong> {member.mobile}</p>
+                <p><strong>Email:</strong> {member.email}</p>
+                <p><strong>Last Paid:</strong> ₹ {member.moneyPaid}</p>
+
                 <div style={{ marginTop: '10px' }}>
                   <label>💸 New Payment:</label>
                   <input
@@ -144,14 +146,14 @@ const ExpiredMembers = () => {
                       marginLeft: '10px',
                       padding: '5px',
                       borderRadius: '6px',
+                      border: '1px solid #ccc',
                     }}
                   />
                 </div>
+
                 <div style={{ marginTop: '10px' }}>
-                  <label>📅 New Validity (days):</label>
-                  <input
-                    type="number"
-                    placeholder="Plan Validity"
+                  <label>📅 New Validity:</label>
+                  <select
                     value={renewalData[member._id]?.planValidity || ''}
                     onChange={(e) =>
                       setRenewalData((prev) => ({
@@ -164,11 +166,20 @@ const ExpiredMembers = () => {
                     }
                     style={{
                       marginLeft: '10px',
-                      padding: '5px',
+                      padding: '6px',
                       borderRadius: '6px',
+                      border: '1px solid #ccc',
                     }}
-                  />
+                  >
+                    <option value="">-- Select Validity --</option>
+                    {planOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
                 </div>
+
                 <div style={{ marginTop: '15px' }}>
                   <button
                     onClick={() => handleRenew(member._id)}
