@@ -67,10 +67,10 @@ const Wallet = () => {
     >
       <h3 style={{ fontSize: '22px', margin: 'auto' }}>💰 Wallet Overview</h3>
       <p style={{ fontSize: '16px', margin: '8px 0' }}>
-        <strong>Total Earnings (This Month):</strong> ₹ {currentMonthEarnings}
+        Total Earnings (This Month):<strong> ₹ {currentMonthEarnings}</strong>
       </p>
       <p style={{ fontSize: '16px', margin: '8px 0' }}>
-        <strong>New Members (This Month):</strong> {currentMonthMembers.length}
+        New Members (This Month):<strong> {currentMonthMembers.length}</strong>
       </p>
     </div>
   );
