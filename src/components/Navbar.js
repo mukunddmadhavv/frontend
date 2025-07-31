@@ -33,7 +33,7 @@ const Navbar = () => {
     },
     logo: {
       fontSize: '30px',
-      fontWeight: 900,
+      fontWeight: 700,
       color: '#083ca0',
     },
     links: {
