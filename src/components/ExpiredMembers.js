@@ -81,9 +81,7 @@ const ExpiredMembers = () => {
     }
   };
 
-  const handleDelete = (memberId) => {
-    setExpiredMembers((prev) => prev.filter((m) => m._id !== memberId));
-  };
+  
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
@@ -182,32 +180,22 @@ const ExpiredMembers = () => {
 
                 <div style={{ marginTop: '15px' }}>
                   <button
-                    onClick={() => handleRenew(member._id)}
-                    style={{
-                      background: '#22c55e',
-                      border: 'none',
-                      color: 'white',
-                      padding: '8px 14px',
-                      borderRadius: '6px',
-                      marginRight: '10px',
-                      fontWeight: 600,
-                    }}
-                  >
-                    Renew Now
-                  </button>
-                  <button
-                    onClick={() => handleDelete(member._id)}
-                    style={{
-                      background: '#ef4444',
-                      border: 'none',
-                      color: 'white',
-                      padding: '8px 14px',
-                      borderRadius: '6px',
-                      fontWeight: 600,
-                    }}
-                  >
-                    Delete
-                  </button>
+  onClick={() => handleRenew(member._id)}
+  style={{
+    background: 'linear-gradient(180deg, #065f46, #059669)', // Premium dark green gradient
+    border: 'none',
+    color: 'white',
+    padding: '8px 14px',
+    borderRadius: '6px',
+    marginRight: '10px',
+    fontWeight: 600,
+    cursor: 'pointer',
+  }}
+>
+  Renew Now
+</button>
+
+                  
                 </div>
               </div>
             )}
