@@ -21,17 +21,34 @@ const ExpiredMembers = () => {
 
   useEffect(() => {
     const now = new Date();
-    const expired = members.filter(member => {
-      const joinDate = parseISO(member.dateJoined);
-      const expiryDate = addDays(joinDate, parseInt(member.planValidity));
-      return isBefore(expiryDate, now);
+
+    // Group members by fullName + mobile + ownerMobile + email
+    const grouped = {};
+    members.forEach((member) => {
+      const key = `${member.fullName}_${member.mobile}_${member.ownerMobile}_${member.email}`;
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(member);
     });
 
-    setExpiredMembers(expired);
+    const expiredList = [];
+
+    Object.values(grouped).forEach((group) => {
+      const latest = group.reduce((a, b) =>
+        new Date(a.dateJoined) > new Date(b.dateJoined) ? a : b
+      );
+      const joinDate = parseISO(latest.dateJoined);
+      const expiryDate = addDays(joinDate, parseInt(latest.planValidity));
+
+      if (isBefore(expiryDate, now)) {
+        expiredList.push(latest);
+      }
+    });
+
+    setExpiredMembers(expiredList);
   }, [members]);
 
   const handleRenew = async (memberId) => {
-    const member = expiredMembers.find(m => m._id === memberId);
+    const member = expiredMembers.find((m) => m._id === memberId);
     const payload = {
       fullName: member.fullName,
       mobile: member.mobile,
@@ -39,17 +56,17 @@ const ExpiredMembers = () => {
       ownerMobile: member.ownerMobile,
       dateJoined: new Date().toISOString(),
       moneyPaid: renewalData[memberId]?.moneyPaid || '',
-      planValidity: renewalData[memberId]?.planValidity || ''
+      planValidity: renewalData[memberId]?.planValidity || '',
     };
 
     const res = await fetch('https://backend-3iv8.onrender.com/api/members', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
     if (res.ok) {
-      setExpiredMembers(prev => prev.filter(m => m._id !== memberId));
+      setExpiredMembers((prev) => prev.filter((m) => m._id !== memberId));
       setExpandedId(null);
       alert('Renewed successfully!');
     } else {
@@ -58,7 +75,7 @@ const ExpiredMembers = () => {
   };
 
   const handleDelete = (memberId) => {
-    setExpiredMembers(prev => prev.filter(m => m._id !== memberId));
+    setExpiredMembers((prev) => prev.filter((m) => m._id !== memberId));
   };
 
   return (
@@ -67,7 +84,7 @@ const ExpiredMembers = () => {
       {expiredMembers.length === 0 ? (
         <p>No expired members</p>
       ) : (
-        expiredMembers.map(member => (
+        expiredMembers.map((member) => (
           <div
             key={member._id}
             style={{
@@ -75,20 +92,22 @@ const ExpiredMembers = () => {
               borderRadius: '10px',
               marginBottom: '15px',
               padding: '15px',
-              boxShadow: '0 2px 6px rgba(0,0,0,0.05)'
+              boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <strong>{member.fullName}</strong>
               <button
-                onClick={() => setExpandedId(prev => (prev === member._id ? null : member._id))}
+                onClick={() =>
+                  setExpandedId((prev) => (prev === member._id ? null : member._id))
+                }
                 style={{
                   background: '#facc15',
                   border: 'none',
                   padding: '6px 12px',
                   borderRadius: '6px',
                   cursor: 'pointer',
-                  fontWeight: 600
+                  fontWeight: 600,
                 }}
               >
                 {expandedId === member._id ? 'Hide' : 'Renew'}
@@ -97,9 +116,15 @@ const ExpiredMembers = () => {
 
             {expandedId === member._id && (
               <div style={{ marginTop: '15px' }}>
-                <p><strong>Mobile:</strong> {member.mobile}</p>
-                <p><strong>Email:</strong> {member.email}</p>
-                <p><strong>Last Paid:</strong> ₹ {member.moneyPaid}</p>
+                <p>
+                  <strong>Mobile:</strong> {member.mobile}
+                </p>
+                <p>
+                  <strong>Email:</strong> {member.email}
+                </p>
+                <p>
+                  <strong>Last Paid:</strong> ₹ {member.moneyPaid}
+                </p>
                 <div style={{ marginTop: '10px' }}>
                   <label>💸 New Payment:</label>
                   <input
@@ -107,18 +132,18 @@ const ExpiredMembers = () => {
                     placeholder="Money Paid"
                     value={renewalData[member._id]?.moneyPaid || ''}
                     onChange={(e) =>
-                      setRenewalData(prev => ({
+                      setRenewalData((prev) => ({
                         ...prev,
                         [member._id]: {
                           ...prev[member._id],
-                          moneyPaid: e.target.value
-                        }
+                          moneyPaid: e.target.value,
+                        },
                       }))
                     }
                     style={{
                       marginLeft: '10px',
                       padding: '5px',
-                      borderRadius: '6px'
+                      borderRadius: '6px',
                     }}
                   />
                 </div>
@@ -129,18 +154,18 @@ const ExpiredMembers = () => {
                     placeholder="Plan Validity"
                     value={renewalData[member._id]?.planValidity || ''}
                     onChange={(e) =>
-                      setRenewalData(prev => ({
+                      setRenewalData((prev) => ({
                         ...prev,
                         [member._id]: {
                           ...prev[member._id],
-                          planValidity: e.target.value
-                        }
+                          planValidity: e.target.value,
+                        },
                       }))
                     }
                     style={{
                       marginLeft: '10px',
                       padding: '5px',
-                      borderRadius: '6px'
+                      borderRadius: '6px',
                     }}
                   />
                 </div>
@@ -154,7 +179,7 @@ const ExpiredMembers = () => {
                       padding: '8px 14px',
                       borderRadius: '6px',
                       marginRight: '10px',
-                      fontWeight: 600
+                      fontWeight: 600,
                     }}
                   >
                     Renew Now
@@ -167,7 +192,7 @@ const ExpiredMembers = () => {
                       color: 'white',
                       padding: '8px 14px',
                       borderRadius: '6px',
-                      fontWeight: 600
+                      fontWeight: 600,
                     }}
                   >
                     Delete
