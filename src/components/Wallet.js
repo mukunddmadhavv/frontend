@@ -65,8 +65,8 @@ const Wallet = () => {
         boxShadow: '0 10px 20px rgba(0,0,0,0.1)',
       }}
     >
-      <h3 style={{ fontSize: '22px', margin: 'auto' }}>💰 Wallet Overview</h3>
-      <p style={{ fontSize: '16px', margin: '8px 0' }}>
+      <h3 style={{ fontSize: '22px', margin: 'auto',           fontFamily: 'Plus Jakarta Sans, sans-serif',}}>💰 Wallet Overview</h3>
+      <p style={{ fontSize: '16px', margin: '8px 0' ,          fontFamily: 'Plus Jakarta Sans, sans-serif',}}>
         Total Earnings (This Month):<strong> ₹ {currentMonthEarnings}</strong>
       </p>
       <p style={{ fontSize: '16px', margin: '8px 0' }}>
