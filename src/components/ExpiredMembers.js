@@ -113,6 +113,7 @@ const ExpiredMembers = () => {
                   borderRadius: '6px',
                   cursor: 'pointer',
                   fontWeight: 600,
+                color:'white',
                 }}
               >
                 {expandedId === member._id ? 'Hide' : 'Renew'}
