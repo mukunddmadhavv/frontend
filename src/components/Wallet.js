@@ -1,4 +1,3 @@
-// components/Wallet.js
 import React, { useEffect, useState } from 'react';
 import { parseISO, isSameMonth } from 'date-fns';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
@@ -6,6 +5,7 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 const Wallet = () => {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [animatedEarnings, setAnimatedEarnings] = useState(0);
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -28,34 +28,19 @@ const Wallet = () => {
     fetchMembers();
   }, []);
 
-
-
   useEffect(() => {
-  const style = document.createElement('style');
-  style.innerHTML = `
-    @keyframes colorShiftGlow {
-      0% {
-        box-shadow: 0 0 12px #fbbf24;
+    const style = document.createElement('style');
+    style.innerHTML = `
+      @keyframes colorShiftGlow {
+        0% { box-shadow: 0 0 12px #fbbf24; }
+        33% { box-shadow: 0 0 12px #f59e0b; }
+        66% { box-shadow: 0 0 12px #fcd34d; }
+        100% { box-shadow: 0 0 12px #fbbf24; }
       }
-      33% {
-        box-shadow: 0 0 12px #f59e0b;
-      }
-      66% {
-        box-shadow: 0 0 12px #fcd34d;
-      }
-      100% {
-        box-shadow: 0 0 12px #fbbf24;
-      }
-    }
-  `;
-  document.head.appendChild(style);
-
-  // Optional cleanup
-  return () => {
-    document.head.removeChild(style);
-  };
-}, []);
-
+    `;
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  }, []);
 
   const now = new Date();
 
@@ -67,6 +52,24 @@ const Wallet = () => {
     (sum, m) => sum + Number(m.moneyPaid),
     0
   );
+
+  // Counter animation for earnings
+  useEffect(() => {
+    const duration = 1000;
+    const startTime = performance.now();
+
+    const animate = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const value = Math.floor(progress * currentMonthEarnings);
+      setAnimatedEarnings(value);
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }, [currentMonthEarnings]);
 
   if (loading) {
     return (
@@ -83,24 +86,45 @@ const Wallet = () => {
 
   return (
     <div
-  style={{
-    maxWidth: '400px',
-    margin: '10px',
-    padding: '24px',
-    borderRadius: '20px',
-    background: 'linear-gradient(180deg, #FDE68A, #F59E0B)',
-    color: '#4B3209',
-    fontFamily: 'Plus Jakarta Sans, sans-serif',
-    animation: 'colorShiftGlow 5s ease-in-out infinite',
-  }}
->
-
-      <h3 style={{ fontSize: '22px', margin: 'auto',           fontFamily: 'Plus Jakarta Sans, sans-serif',fontWeight:600}}>💰Monthly Overview</h3>
-      <p style={{ fontSize: '16px', margin: '8px 0' ,  fontFamily: 'Plus Jakarta Sans, sans-serif',fontWeight:600}}>
-        Earnings :<strong> ₹ {currentMonthEarnings}</strong>
+      style={{
+        maxWidth: '400px',
+        margin: '10px',
+        padding: '24px',
+        borderRadius: '20px',
+        background: 'linear-gradient(180deg, #FDE68A, #F59E0B)',
+        color: '#4B3209',
+        fontFamily: 'Plus Jakarta Sans, sans-serif',
+        animation: 'colorShiftGlow 5s ease-in-out infinite',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      <h3
+        style={{
+          fontSize: '22px',
+          margin: 'auto',
+          fontWeight: 600,
+        }}
+      >
+        💰 Monthly Overview
+      </h3>
+      <p
+        style={{
+          fontSize: '16px',
+          margin: '8px 0',
+          fontWeight: 600,
+        }}
+      >
+        Earnings : <strong>₹ {animatedEarnings.toLocaleString()}</strong>
       </p>
-      <p style={{ fontSize: '16px', margin: '8px 0' ,          fontFamily: 'Plus Jakarta Sans, sans-serif',fontWeight:600}}>
-       Members :<strong> {currentMonthMembers.length}</strong>
+      <p
+        style={{
+          fontSize: '16px',
+          margin: '8px 0',
+          fontWeight: 600,
+        }}
+      >
+        Members : <strong>{currentMonthMembers.length}</strong>
       </p>
     </div>
   );
