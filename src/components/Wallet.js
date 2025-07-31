@@ -46,7 +46,7 @@ const Wallet = () => {
           src="https://lottie.host/d8e97e0b-0dd7-4d00-a37f-828f989e9297/87ZlTWq9VV.lottie"
           loop
           autoplay
-          style={{ width: '100px', height: '100px' }}
+          style={{ width: '150px', height: '150px' }}
         />
       </div>
     );
