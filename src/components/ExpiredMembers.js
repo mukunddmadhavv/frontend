@@ -44,8 +44,20 @@ const ExpiredMembers = () => {
     setEditingId(null);
   };
 
-  const handleDelete = (id) => {
-    setExpired(expired.filter(m => m._id !== id));
+  const handleDelete = async (id) => {
+    const owner = JSON.parse(localStorage.getItem('businessOwner'));
+    if (!owner?.mobile) return;
+
+    try {
+      await fetch(`https://backend-3iv8.onrender.com/api/members/${id}?ownerMobile=${owner.mobile}`, {
+        method: 'DELETE',
+      });
+      setExpired(expired.filter(m => m._id !== id));
+      alert('Member deleted');
+    } catch (err) {
+      console.error(err);
+      alert('Failed to delete');
+    }
   };
 
   const handleEdit = (member) => {
@@ -55,7 +67,7 @@ const ExpiredMembers = () => {
       mobile: member.mobile,
       email: member.email || '',
       moneyPaid: member.moneyPaid,
-      dateJoined: format(new Date(), 'yyyy-MM-dd'), // new date
+      dateJoined: format(new Date(), 'yyyy-MM-dd'),
       planValidity: member.planValidity,
     });
   };
@@ -67,11 +79,14 @@ const ExpiredMembers = () => {
 
   const handleRenewSubmit = async (e) => {
     e.preventDefault();
+    const owner = JSON.parse(localStorage.getItem('businessOwner'));
+    if (!owner?.mobile) return;
+
     try {
       await fetch(`https://backend-3iv8.onrender.com/api/members/${editingId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, ownerMobile: owner.mobile }),
       });
 
       alert('Renewed successfully');
@@ -90,7 +105,6 @@ const ExpiredMembers = () => {
 
       {expired.map((member) => (
         <div key={member._id} style={{ marginBottom: '16px' }}>
-          {/* Collapsible Header */}
           <div
             onClick={() => handleToggle(member._id)}
             style={{
@@ -105,7 +119,6 @@ const ExpiredMembers = () => {
             {member.fullName}
           </div>
 
-          {/* Expanded Content */}
           {expandedId === member._id && (
             <div
               style={{
@@ -153,7 +166,6 @@ const ExpiredMembers = () => {
                 </button>
               </div>
 
-              {/* In-place Renewal Form */}
               {editingId === member._id && (
                 <form onSubmit={handleRenewSubmit} style={{ marginTop: '20px' }}>
                   {['fullName', 'mobile', 'email', 'moneyPaid', 'dateJoined'].map((field) => (
