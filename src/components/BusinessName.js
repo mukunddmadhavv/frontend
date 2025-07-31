@@ -24,8 +24,8 @@ const BusinessName = () => {
           boxShadow: '0 6px 14px rgba(0,0,0,0.1)',
         }}
       >
-        <h3 style={{ fontSize: '16px', fontWeight: '600', margin: 0 }}>
-          <span style={{ color: '#fecaca' }}>Welcome, 
+        <h3 style={{ fontSize: '16px', fontWeight: '600', margin: 0 }}>Welcome, 
+          <span style={{ color: '#fecaca' }}> 
             { businessName || ' Business Name'}
           </span>
         </h3>
