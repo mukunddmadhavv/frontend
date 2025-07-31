@@ -25,7 +25,7 @@ const BusinessName = () => {
         }}
       >
         <h3 style={{ fontSize: '16px', fontWeight: '600', margin: 0 }}>
-          <span style={{ color: '#fecaca' }}>Welcome , 
+          <span style={{ color: '#fecaca' }}>Welcome, 
             { businessName || ' Business Name'}
           </span>
         </h3>
