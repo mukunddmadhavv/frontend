@@ -33,7 +33,7 @@ const Navbar = () => {
     },
     logo: {
       fontSize: '30px',
-      fontWeight: 700,
+      fontWeight: 900,
       color: '#083ca0',
     },
     links: {
@@ -71,7 +71,7 @@ const Navbar = () => {
 
   return (
     <nav style={styles.navbar}>
-      <div style={styles.logo}>Track</div>
+      <div style={styles.logo}>TRACK</div>
 
       <button style={styles.hamburger} onClick={() => setMenuOpen(!menuOpen)}>
         ☰
