@@ -259,6 +259,7 @@ const Earnings = () => {
     color: '#333',
     fontWeight: 600,
 fontSize: '17px',
+marginBottom:'0px',
 
   }}
 >
