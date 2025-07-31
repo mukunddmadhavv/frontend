@@ -59,7 +59,7 @@ const Wallet = () => {
         margin: '10px',
         padding: '24px',
         borderRadius: '20px',
-        background: 'linear-gradient(135deg, #FDE68A, #F59E0B)',
+        background: 'linear-gradient(180deg, #FDE68A, #F59E0B)',
         color: '#4B3209',
         fontFamily: 'Plus Jakarta Sans, sans-serif',
         boxShadow: '0 10px 20px rgba(0,0,0,0.1)',
