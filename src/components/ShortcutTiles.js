@@ -112,7 +112,7 @@ const ShortcutTiles = () => {
       src="https://lottie.host/92bb8248-2e15-4888-b8bd-65d226dffbde/7S2f2lWKSQ.lottie"
       loop
       autoplay
-      style={{ width: '70px', height: '40px' }}
+      style={{ width: '50px', height: '40px' }}
     />
     <span style={{ ...textStyle, color: '#fff' }}><strong>Notification</strong></span>
   </div>
