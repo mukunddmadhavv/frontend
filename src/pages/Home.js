@@ -4,6 +4,8 @@ import ShortcutTiles from '../components/ShortcutTiles';
 import Wallet from '../components/Wallet';
 import Banner from '../components/Banner';
 import BusinessName from '../components/BusinessName';
+import ExpiredMembers from '../components/ExpiredMembers'; 
+
 
 
 
@@ -20,6 +22,7 @@ const Home = () => {
 <BusinessName />
       <ShortcutTiles />
 <Wallet/>
+<ExpiredMembers/>
       {/* More sections here */}
     </div>
   );
