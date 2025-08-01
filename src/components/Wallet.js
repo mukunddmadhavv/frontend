@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { parseISO, isSameMonth } from 'date-fns';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
@@ -88,23 +88,10 @@ const Wallet = () => {
     requestAnimationFrame(animate);
   }, [currentMonthMembers.length]);
 
-  if (loading) {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', padding: '30px' }}>
-        <DotLottieReact
-          src="https://lottie.host/d8e97e0b-0dd7-4d00-a37f-828f989e9297/87ZlTWq9VV.lottie"
-          loop
-          autoplay
-          style={{ width: '120px', height: '120px' }}
-        />
-      </div>
-    );
-  }
-
-  const renderStars = () => {
+  const sparkles = useMemo(() => {
     return Array.from({ length: 30 }).map((_, i) => {
       const size = Math.random() * 4 + 2;
-      const duration = Math.random() * 3 + 2;
+      const duration = Math.random() * 10 + 5;
       const left = Math.random() * 100;
       const top = Math.random() * 100;
       const delay = Math.random() * 5;
@@ -126,7 +113,20 @@ const Wallet = () => {
         />
       );
     });
-  };
+  }, []);
+
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '30px' }}>
+        <DotLottieReact
+          src="https://lottie.host/d8e97e0b-0dd7-4d00-a37f-828f989e9297/87ZlTWq9VV.lottie"
+          loop
+          autoplay
+          style={{ width: '120px', height: '120px' }}
+        />
+      </div>
+    );
+  }
 
   return (
     <div
@@ -143,8 +143,8 @@ const Wallet = () => {
         overflow: 'hidden',
       }}
     >
-      {/* Sparkling background stars */}
-      {renderStars()}
+      {/* Sparkling background */}
+      {sparkles}
 
       {/* Foreground content */}
       <div style={{ position: 'relative', zIndex: 1 }}>
