@@ -8,6 +8,7 @@ import Earnings from './pages/Earnings';
 import Notifications from './pages/Notifications';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import ExpiredMembers from './pages/ExpiredMembers';  
 
 import PrivateRoute from './components/PrivateRoute'; // ✅ Import it
 
@@ -18,11 +19,10 @@ function App() {
         {/* Public routes */}
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Home />}/>
 
         {/* Protected routes */}
-        <Route path="/" element={
-          <PrivateRoute><Home /></PrivateRoute>
-        } />
+       
 
         <Route path="/register" element={
           <PrivateRoute><Register /></PrivateRoute>
@@ -39,6 +39,13 @@ function App() {
         <Route path="/notifications" element={
           <PrivateRoute><Notifications /></PrivateRoute>
         } />
+
+
+        <Route path="/expiredmembers" element={
+          <PrivateRoute><ExpiredMembers /></PrivateRoute>
+        } />
+
+
       </Routes>
     </Router>
   );
