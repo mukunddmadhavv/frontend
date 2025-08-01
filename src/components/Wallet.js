@@ -40,18 +40,9 @@ const Wallet = () => {
       }
 
       @keyframes sparkle {
-        0% {
-          opacity: 0;
-          transform: scale(0.7) translateY(0) rotate(0deg);
-        }
-        50% {
-          opacity: 1;
-          transform: scale(1) translateY(-8px) rotate(180deg);
-        }
-        100% {
-          opacity: 0;
-          transform: scale(0.7) translateY(0) rotate(360deg);
-        }
+        0% { opacity: 0; transform: scale(0.5) translateY(0); }
+        50% { opacity: 1; transform: scale(1) translateY(-10px); }
+        100% { opacity: 0; transform: scale(0.5) translateY(0); }
       }
     `;
     document.head.appendChild(style);
@@ -110,13 +101,13 @@ const Wallet = () => {
     );
   }
 
-  const renderSparkles = () => {
+  const renderStars = () => {
     return Array.from({ length: 30 }).map((_, i) => {
-      const size = Math.random() * 5 + 5; // 5px–10px
-      const duration = Math.random() * 10 + 5; // 5s–15s
+      const size = Math.random() * 4 + 2;
+      const duration = Math.random() * 3 + 2;
       const left = Math.random() * 100;
       const top = Math.random() * 100;
-      const delay = Math.random() * 10;
+      const delay = Math.random() * 5;
 
       return (
         <div
@@ -126,7 +117,7 @@ const Wallet = () => {
             width: `${size}px`,
             height: `${size}px`,
             borderRadius: '50%',
-            backgroundColor: '#ffffffcc',
+            backgroundColor: '#ffffffaa',
             left: `${left}%`,
             top: `${top}%`,
             animation: `sparkle ${duration}s ease-in-out ${delay}s infinite`,
@@ -152,10 +143,10 @@ const Wallet = () => {
         overflow: 'hidden',
       }}
     >
-      {/* Sparkles */}
-      {renderSparkles()}
+      {/* Sparkling background stars */}
+      {renderStars()}
 
-      {/* Main content */}
+      {/* Foreground content */}
       <div style={{ position: 'relative', zIndex: 1 }}>
         <h3 style={{ fontSize: '22px', margin: 'auto', fontWeight: 600 }}>
           💰 Monthly Overview
