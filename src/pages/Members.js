@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { parseISO, differenceInCalendarDays, addDays } from 'date-fns';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import Navbar from '../components/Navbar';
 import axios from 'axios';
