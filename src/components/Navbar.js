@@ -77,9 +77,13 @@ const Navbar = () => {
       </button>
 
       <ul style={styles.links}>
-        <li><a href="/" style={styles.link}>Home</a></li>
+        <li><a href="/" style={styles.link}>Home</a></li>     
+        <li><a href="/register" style={styles.link}>Register</a></li>
+
         <li><a href="/members" style={styles.link}>Members</a></li>
         <li><a href="/earnings" style={styles.link}>Earnings</a></li>
+        <li><a href="/expiredmembers" style={styles.link}>Expired Members</a></li>
+
         <li>
   <button
     style={{ ...styles.link, background: 'none', border: 'none', cursor: 'pointer' }}
