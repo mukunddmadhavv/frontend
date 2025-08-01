@@ -62,7 +62,6 @@ const Navbar = () => {
       border: 'none',
       cursor: 'pointer',
       color: '#083ca0',
-      paddingBottom: '10px',
       margin: 0,
       lineHeight: 1,
       alignSelf: 'center',
