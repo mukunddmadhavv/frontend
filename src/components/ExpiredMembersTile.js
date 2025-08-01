@@ -105,7 +105,7 @@ const ExportMembersTile = () => {
         onClick={handleExport}
         style={{
           flex: '1 1 45%',
-          background: linear-gradient(180deg, #1E1B2E, #2A0A3C),
+          background: 'linear-gradient(180deg, #1E1B2E, #2A0A3C)',
           color: '#fff',
           padding: '20px',
           borderRadius: '12px',
@@ -123,7 +123,7 @@ const ExportMembersTile = () => {
         onClick={() => navigate('/expiredmembers')}
         style={{
           flex: '1 1 45%',
-          background: linear-gradient(135deg, #2D033B, #4B0082), 
+          background: 'linear-gradient(135deg, #2D033B, #4B0082)', 
           color: '#fff',
           padding: '20px',
           borderRadius: '12px',
