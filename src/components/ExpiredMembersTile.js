@@ -134,7 +134,7 @@ const ExportMembersTile = () => {
           boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
         }}
       >
-        🧱 Other Action
+         📋Expired Members
       </button>
     </div>
   );
