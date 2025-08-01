@@ -16,7 +16,21 @@ const ExportMembersTile = () => {
       }
 
       const res = await fetch('https://backend-3iv8.onrender.com/api/members');
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error('Error fetching members:', errorText);
+        alert('Failed to fetch members.');
+        return;
+      }
+
       const allMembers = await res.json();
+
+      if (!Array.isArray(allMembers)) {
+        console.error('Expected an array but got:', allMembers);
+        alert('Invalid response from server.');
+        return;
+      }
 
       const currentMonth = dayjs().month();
       const currentYear = dayjs().year();
@@ -122,4 +136,3 @@ const ExportMembersTile = () => {
 };
 
 export default ExportMembersTile;
-
