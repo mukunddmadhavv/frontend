@@ -2,8 +2,11 @@ import React from 'react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom';
 
 const ExportMembersTile = () => {
+  const navigate = useNavigate();
+
   const handleExport = async () => {
     try {
       const stored = localStorage.getItem('businessOwner');
@@ -15,9 +18,9 @@ const ExportMembersTile = () => {
         return;
       }
 
-const res = await fetch(
-  `https://backend-3iv8.onrender.com/api/members?ownerMobile=${ownerMobile}`
-);
+      const res = await fetch(
+        `https://backend-3iv8.onrender.com/api/members?ownerMobile=${ownerMobile}`
+      );
 
       if (!res.ok) {
         const errorText = await res.text();
@@ -117,7 +120,7 @@ const res = await fetch(
       </button>
 
       <button
-        onClick={() => alert('Add your second action here')}
+        onClick={() => navigate('/expiredmembers')}
         style={{
           flex: '1 1 45%',
           background: 'linear-gradient(135deg, #0f172a, #1e3a8a)',
