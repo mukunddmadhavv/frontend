@@ -3,6 +3,7 @@ import { parseISO, differenceInCalendarDays, addDays } from 'date-fns';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import Navbar from '../components/Navbar';
 import axios from 'axios';
+import { parseISO, differenceInCalendarDays, addDays, format } from 'date-fns';
 
 // Calculate correct plan end date
 const calculatePlanEnd = (joined, validity) => {
@@ -60,7 +61,7 @@ const Members = () => {
       const daysAfterExpiry = differenceInCalendarDays(currentTime, planEndsOn);
       return {
         ...member,
-        planEndsOn: planEndsOn.toISOString().split('T')[0],
+planEndsOn: format(planEndsOn, 'dd/MM/yyyy'),
         daysLeft,
         hideAfter7Days: daysAfterExpiry > 7,
       };
