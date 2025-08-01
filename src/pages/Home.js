@@ -12,7 +12,7 @@ const Home = () => {
       {/* Gradient Section */}
       <div
         style={{
-          background: 'linear-gradient(180deg, #083ca0 0%, #4f7dcf 100%)',
+          background: 'linear-gradient(180deg, #083ca0 0%, #4f7dcf 100%,white)',
           borderBottomLeftRadius: '20px',
           borderBottomRightRadius: '20px',
           boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
