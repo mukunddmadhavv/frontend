@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { parseISO, differenceInDays, addDays } from 'date-fns';
+import { parseISO, differenceInCalendarDays, addDays } from 'date-fns';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import Navbar from '../components/Navbar';
 import axios from 'axios';
 
+// Calculate correct plan end date
 const calculatePlanEnd = (joined, validity) => {
   const daysMap = {
     '15 days': 15,
@@ -12,58 +13,60 @@ const calculatePlanEnd = (joined, validity) => {
     '6 months': 180,
   };
 
-  const daysToAdd = daysMap[validity] || 30; // default 30 days
+  const daysToAdd = daysMap[validity] || 30;
   const start = parseISO(joined);
-  return addDays(start, daysToAdd);
+  return addDays(start, daysToAdd - 1); // today counts as Day 1
 };
-
-
 
 const Members = () => {
   const [members, setMembers] = useState([]);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
- useEffect(() => {
-  const fetchMembers = async () => {
-    try {
-      const user = JSON.parse(localStorage.getItem('businessOwner'));
+  // Auto-refresh current time every 1 minute
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000); // 60 seconds
 
-      if (!user?.mobile) {
-        alert("Please login again.");
-        return;
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        const user = JSON.parse(localStorage.getItem('businessOwner'));
+        if (!user?.mobile) {
+          alert('Please login again.');
+          return;
+        }
+
+        const res = await axios.get('https://backend-3iv8.onrender.com/api/members', {
+          params: { ownerMobile: user.mobile },
+        });
+
+        setMembers(res.data);
+      } catch (error) {
+        console.error('Failed to fetch members:', error);
       }
+    };
 
-      const res = await axios.get('https://backend-3iv8.onrender.com/api/members', {
-        params: { ownerMobile: user.mobile }, // ✅ Send ownerMobile as query param
-      });
+    fetchMembers();
+  }, []);
 
-      setMembers(res.data);
-    } catch (error) {
-      console.error('Failed to fetch members:', error);
-    }
-  };
-
-  fetchMembers();
-}, []);
-
-
-
-  const today = new Date();
-
-   const enriched = members
+  const enriched = members
     .map((member) => {
       const planEndsOn = calculatePlanEnd(member.dateJoined, member.planValidity);
-      const daysLeft = differenceInDays(planEndsOn, today);
-      const daysAfterExpiry = differenceInDays(today, planEndsOn);
+      const daysLeft = differenceInCalendarDays(planEndsOn, currentTime);
+      const daysAfterExpiry = differenceInCalendarDays(currentTime, planEndsOn);
       return {
         ...member,
         planEndsOn: planEndsOn.toISOString().split('T')[0],
         daysLeft,
-        hideAfter7Days: daysAfterExpiry > 7, // true if expired more than 7 days ago
+        hideAfter7Days: daysAfterExpiry > 7,
       };
     })
-    .filter((member) => !member.hideAfter7Days) // remove those expired more than 7 days ago
+    .filter((member) => !member.hideAfter7Days)
     .sort((a, b) => a.daysLeft - b.daysLeft);
-
 
   const getBadgeStyle = (daysLeft) => {
     if (daysLeft < 0) {
@@ -83,8 +86,7 @@ const Members = () => {
           margin: 0,
           fontFamily: 'Plus Jakarta Sans, sans-serif',
           backgroundColor: 'white',
-          paddingRight: '10px',
-          paddingLeft: '10px',
+          padding: '10px',
           minHeight: '100vh',
         }}
       >
@@ -109,8 +111,8 @@ const Members = () => {
               color: '#083ca0',
               fontSize: '32px',
               fontWeight: 'bold',
-              fontFamily: 'Plus Jakarta Sans, sans-serif',
               margin: 0,
+              paddingLeft: '12px',
             }}
           >
             Members
