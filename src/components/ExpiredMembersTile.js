@@ -15,7 +15,9 @@ const ExportMembersTile = () => {
         return;
       }
 
-      const res = await fetch('https://backend-3iv8.onrender.com/api/members');
+const res = await fetch(
+  `https://backend-3iv8.onrender.com/api/members?ownerMobile=${ownerMobile}`
+);
 
       if (!res.ok) {
         const errorText = await res.text();
