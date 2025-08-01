@@ -105,7 +105,7 @@ const ExportMembersTile = () => {
         onClick={handleExport}
         style={{
           flex: '1 1 45%',
-          background: 'linear-gradient(135deg, #7f1d1d, #b91c1c)',
+          background: linear-gradient(180deg, #1E1B2E, #2A0A3C),
           color: '#fff',
           padding: '20px',
           borderRadius: '12px',
