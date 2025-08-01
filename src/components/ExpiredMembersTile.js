@@ -97,7 +97,7 @@ const res = await fetch(
   };
 
   return (
-    <div style={{ display: 'flex', gap: '12px', padding: '16px', flexWrap: 'wrap' }}>
+    <div style={{ display: 'flex', gap: '12px', padding: '10px', flexWrap: 'wrap' }}>
       <button
         onClick={handleExport}
         style={{
