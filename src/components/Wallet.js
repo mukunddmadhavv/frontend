@@ -44,6 +44,21 @@ const Wallet = () => {
         50% { opacity: 1; transform: scale(1) translateY(-10px); }
         100% { opacity: 0; transform: scale(0.5) translateY(0); }
       }
+
+      @keyframes lensGlare {
+        0% {
+          transform: translate(-50%, -50%) rotate(0deg);
+          opacity: 0.3;
+        }
+        50% {
+          transform: translate(-50%, -50%) rotate(180deg);
+          opacity: 0.6;
+        }
+        100% {
+          transform: translate(-50%, -50%) rotate(360deg);
+          opacity: 0.3;
+        }
+      }
     `;
     document.head.appendChild(style);
     return () => document.head.removeChild(style);
@@ -145,6 +160,25 @@ const Wallet = () => {
     >
       {/* Sparkling background */}
       {sparkles}
+
+      {/* Lens Glare */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          width: '300px',
+          height: '300px',
+          borderRadius: '50%',
+          background: 'radial-gradient(white 0%, transparent 60%)',
+          filter: 'blur(40px)',
+          opacity: 0.3,
+          animation: 'lensGlare 12s linear infinite',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 0,
+          pointerEvents: 'none',
+        }}
+      ></div>
 
       {/* Foreground content */}
       <div style={{ position: 'relative', zIndex: 1 }}>
