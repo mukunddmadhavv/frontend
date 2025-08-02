@@ -116,14 +116,14 @@ const ExportMembersTile = () => {
           boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
         }}
       >
-        📄 Export Members
+        📄Monthly Overview
       </button>
 
       <button
         onClick={() => navigate('/expiredmembers')}
         style={{
           flex: '1 1 45%',
-          background: 'linear-gradient(135deg, #2D033B, #4B0082)', 
+          background: 'linear-gradient(180deg, #2D033B, #4B0082)', 
           color: '#fff',
           padding: '20px',
           borderRadius: '12px',
@@ -134,7 +134,7 @@ const ExportMembersTile = () => {
           boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
         }}
       >
-         📋Expired Members
+         Renew Members
       </button>
     </div>
   );
