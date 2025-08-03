@@ -35,10 +35,21 @@ const NotificationPage = () => {
           const latest = group.reduce((a, b) =>
             new Date(a.dateJoined) > new Date(b.dateJoined) ? a : b
           );
-          const days = parseInt(latest.planValidity) || 0;
+
+          // 🔐 Robust planValidity parsing
+          let days = 0;
+          const validity = latest.planValidity?.toLowerCase?.() || '';
+          if (validity.includes('day')) {
+            days = parseInt(validity);
+          } else if (validity.includes('month')) {
+            const count = parseInt(validity);
+            days = count * 30;
+          }
+
           const expiryDate = addDays(parseISO(latest.dateJoined), days);
 
-          if (isBefore(expiryDate, now)) {
+          // ✅ Ensure expiry is in the past and not a future-dated join
+          if (isBefore(expiryDate, now) && isBefore(parseISO(latest.dateJoined), now)) {
             expired.push({ ...latest, expiryDate });
           }
         });
@@ -80,15 +91,36 @@ const NotificationPage = () => {
                 padding: 16,
                 marginBottom: 16,
                 backgroundColor: '#fff',
+                boxShadow: '0 4px 10px rgba(0, 0, 0, 0.05)',
               }}
             >
-              <strong>{member.fullName}</strong>
-              <p style={{ margin: '4px 0' }}>
+              <strong style={{ fontSize: '16px', color: '#111' }}>{member.fullName}</strong>
+              <p style={{ margin: '8px 0', fontSize: '14px', color: '#444' }}>
                 {member.fullName}'s membership expired. They joined on{' '}
-                <strong>{format(parseISO(member.dateJoined), 'dd MMM yyyy')}</strong>, paid{' '}
-                <strong>₹{member.moneyPaid}</strong>, chose a{' '}
+                <strong style={{ color: '#1e3a8a' }}>
+                  {format(parseISO(member.dateJoined), 'dd MMM yyyy')}
+                </strong>, paid{' '}
+                <span
+                  style={{
+                    background: 'linear-gradient(to right, #14532d, #166534)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    fontWeight: 600,
+                  }}
+                >
+                  ₹{member.moneyPaid}
+                </span>, chose a{' '}
                 <strong>{member.planValidity}</strong> plan, and the plan ended on{' '}
-                <strong>{format(member.expiryDate, 'dd MMM yyyy')}</strong>.
+                <span
+                  style={{
+                    background: 'linear-gradient(to right, #7f1d1d, #991b1b)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    fontWeight: 600,
+                  }}
+                >
+                  {format(member.expiryDate, 'dd MMM yyyy')}
+                </span>.
               </p>
             </div>
           ))
