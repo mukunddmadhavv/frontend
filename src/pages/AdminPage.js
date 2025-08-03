@@ -4,7 +4,7 @@ const AdminPage = () => {
   const [owners, setOwners] = useState([]);
   const [expandedOwners, setExpandedOwners] = useState({});
   const [membersMap, setMembersMap] = useState({});
-  const [expandedMembers, setExpandedMembers] = useState({}); // To toggle each member detail
+  const [expandedMembers, setExpandedMembers] = useState({});
 
   useEffect(() => {
     fetch('https://backend-3iv8.onrender.com/api/business-owners')
@@ -14,13 +14,12 @@ const AdminPage = () => {
   }, []);
 
   const toggleMembers = async (ownerMobile) => {
-    const isExpanded = expandedOwners[ownerMobile];
-
-    if (!isExpanded && !membersMap[ownerMobile]) {
+    if (!expandedOwners[ownerMobile] && !membersMap[ownerMobile]) {
       try {
         const res = await fetch(`https://backend-3iv8.onrender.com/api/business-owners/${ownerMobile}/members`);
         const members = await res.json();
-        setMembersMap(prev => ({ ...prev, [ownerMobile]: members }));
+        const grouped = groupRenewals(members);
+        setMembersMap(prev => ({ ...prev, [ownerMobile]: grouped }));
       } catch (err) {
         console.error('Failed to fetch members:', err);
       }
@@ -32,20 +31,47 @@ const AdminPage = () => {
     }));
   };
 
-  const toggleMemberDetail = (memberId) => {
+  const toggleMemberDetail = (key) => {
     setExpandedMembers(prev => ({
       ...prev,
-      [memberId]: !prev[memberId],
+      [key]: !prev[key],
     }));
   };
 
-  const formatDate = (dateString) => new Date(dateString).toLocaleDateString();
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth()+1).toString().padStart(2,'0')}/${date.getFullYear()}`;
+  };
+
+  const groupRenewals = (members) => {
+    const grouped = {};
+    members.forEach(member => {
+      const key = `${member.fullName}_${member.mobile}_${member.email}_${member.ownerMobile}`;
+      if (!grouped[key]) {
+        grouped[key] = [];
+      }
+      grouped[key].push(member);
+    });
+
+    Object.keys(grouped).forEach(key => {
+      grouped[key].sort((a, b) => new Date(a.dateJoined) - new Date(b.dateJoined));
+    });
+
+    return grouped;
+  };
+
+  const getOrdinal = (n) => {
+    if (n === 1) return '1st';
+    if (n === 2) return '2nd';
+    if (n === 3) return '3rd';
+    return `${n}th`;
+  };
 
   return (
     <div style={{
       padding: '40px 20px',
       fontFamily: 'Plus Jakarta Sans, sans-serif',
-      background: '#f8f9fc',
+      background: '#f5f7fb',
       minHeight: '100vh'
     }}>
       <h1 style={{
@@ -58,11 +84,11 @@ const AdminPage = () => {
         Admin Dashboard
       </h1>
 
-      {owners.map(owner => (
+      {owners.map((owner, ownerIndex) => (
         <div
           key={owner._id}
           style={{
-            marginBottom: '20px',
+            marginBottom: '24px',
             borderRadius: '16px',
             background: '#fff',
             boxShadow: '0 6px 16px rgba(0,0,0,0.06)',
@@ -71,9 +97,8 @@ const AdminPage = () => {
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ fontSize: '18px', fontWeight: '600' }}>
-              {owner.businessName}
+              {ownerIndex + 1}. {owner.businessName}
             </div>
-
             <button
               onClick={() => toggleMembers(owner.mobile)}
               style={{
@@ -93,10 +118,12 @@ const AdminPage = () => {
 
           {expandedOwners[owner.mobile] && (
             <div style={{ marginTop: '16px', paddingLeft: '8px' }}>
-              {membersMap[owner.mobile]?.length ? (
-                membersMap[owner.mobile].map(member => (
+              {Object.keys(membersMap[owner.mobile] || {}).map((key, memberIndex) => {
+                const renewals = membersMap[owner.mobile][key];
+                const member = renewals[0];
+                return (
                   <div
-                    key={member._id}
+                    key={key}
                     style={{
                       padding: '12px 16px',
                       background: '#f7f9fc',
@@ -106,7 +133,7 @@ const AdminPage = () => {
                     }}
                   >
                     <div
-                      onClick={() => toggleMemberDetail(member._id)}
+                      onClick={() => toggleMemberDetail(key)}
                       style={{
                         fontWeight: '600',
                         fontSize: '15px',
@@ -114,25 +141,32 @@ const AdminPage = () => {
                         cursor: 'pointer'
                       }}
                     >
-                      {member.fullName}
+                      {memberIndex + 1}. {member.fullName}
                     </div>
 
-                    {expandedMembers[member._id] && (
+                    {expandedMembers[key] && (
                       <div style={{ marginTop: '10px', fontSize: '14px', color: '#444' }}>
-                        <div>📱 Mobile: {member.mobile}</div>
-                        <div>📧 Email: {member.email || 'N/A'}</div>
-                        <div>🗓️ Joined: {formatDate(member.dateJoined)}</div>
-                        <div>📦 Plan: {member.planValidity}</div>
-                        <div>💰 Paid: ₹{member.moneyPaid}</div>
+                        {renewals.map((r, i) => (
+                          <div key={r._id} style={{
+                            borderTop: i !== 0 ? '1px solid #ccc' : '',
+                            paddingTop: i !== 0 ? '8px' : '0',
+                            marginTop: i !== 0 ? '8px' : '0'
+                          }}>
+                            <strong>{getOrdinal(i + 1)} Renewal</strong><br />
+                            📅 Date Joined: {formatDate(r.dateJoined)}<br />
+                            📦 Plan Validity: {r.planValidity}<br />
+                            💰 Money Paid: ₹{r.moneyPaid}
+                          </div>
+                        ))}
+                        <div style={{ marginTop: '10px', color: '#666' }}>
+                          📱 Mobile: {member.mobile} <br />
+                          📧 Email: {member.email || 'N/A'}
+                        </div>
                       </div>
                     )}
                   </div>
-                ))
-              ) : (
-                <p style={{ fontStyle: 'italic', color: '#888', marginTop: '10px' }}>
-                  No members found for this business.
-                </p>
-              )}
+                );
+              })}
             </div>
           )}
         </div>
