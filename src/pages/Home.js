@@ -5,6 +5,7 @@ import Wallet from '../components/Wallet';
 import Banner from '../components/Banner';
 import BusinessName from '../components/BusinessName';
 import ExpiredMembersTile from '../components/ExpiredMembersTile';    
+import Footer from '../components/Footer';    
 
 
 
@@ -24,6 +25,7 @@ const Home = () => {
       <ShortcutTiles />
 <Wallet/>
 <ExpiredMembersTile/>
+<Footer/>
       {/* More sections here */}
     </div>
   );
