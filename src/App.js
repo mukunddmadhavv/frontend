@@ -9,6 +9,7 @@ import Notifications from './pages/Notifications';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ExpiredMembers from './pages/ExpiredMembers';  
+import AdminPage from './pages/AdminPage';
 
 import PrivateRoute from './components/PrivateRoute'; // ✅ Import it
 
@@ -30,6 +31,13 @@ function App() {
         <Route path="/register" element={
           <PrivateRoute><Register /></PrivateRoute>
         } />
+
+
+<Route path="/admin" element={
+  <PrivateRoute><AdminPage /></PrivateRoute>
+} />
+
+
 
         <Route path="/members" element={
           <PrivateRoute><Members /></PrivateRoute>
