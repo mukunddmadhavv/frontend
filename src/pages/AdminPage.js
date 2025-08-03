@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 
 const AdminPage = () => {
   const [owners, setOwners] = useState([]);
-  const [expandedOwners, setExpandedOwners] = useState({}); // Track expanded dropdowns
-  const [membersMap, setMembersMap] = useState({}); // ownerMobile -> members[]
+  const [expandedOwners, setExpandedOwners] = useState({});
+  const [membersMap, setMembersMap] = useState({});
+  const [expandedMembers, setExpandedMembers] = useState({}); // To toggle each member detail
 
   useEffect(() => {
     fetch('https://backend-3iv8.onrender.com/api/business-owners')
@@ -31,33 +32,59 @@ const AdminPage = () => {
     }));
   };
 
+  const toggleMemberDetail = (memberId) => {
+    setExpandedMembers(prev => ({
+      ...prev,
+      [memberId]: !prev[memberId],
+    }));
+  };
+
   const formatDate = (dateString) => new Date(dateString).toLocaleDateString();
 
   return (
-    <div style={{ padding: '40px 20px', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-      <h1 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '30px' }}>
+    <div style={{
+      padding: '40px 20px',
+      fontFamily: 'Plus Jakarta Sans, sans-serif',
+      background: '#f8f9fc',
+      minHeight: '100vh'
+    }}>
+      <h1 style={{
+        fontSize: '30px',
+        fontWeight: '800',
+        color: '#083ca0',
+        marginBottom: '30px',
+        textAlign: 'center'
+      }}>
         Admin Dashboard
       </h1>
 
       {owners.map(owner => (
-        <div key={owner._id} style={{ marginBottom: '16px', border: '1px solid #ccc', borderRadius: '10px', padding: '16px', backgroundColor: '#fdfdfd' }}>
+        <div
+          key={owner._id}
+          style={{
+            marginBottom: '20px',
+            borderRadius: '16px',
+            background: '#fff',
+            boxShadow: '0 6px 16px rgba(0,0,0,0.06)',
+            padding: '18px 20px'
+          }}
+        >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <strong>{owner.businessName}</strong> <br />
-              <span style={{ fontSize: '13px', color: '#555' }}>
-                Joined on {formatDate(owner.dateJoined)}
-              </span>
+            <div style={{ fontSize: '18px', fontWeight: '600' }}>
+              {owner.businessName}
             </div>
+
             <button
               onClick={() => toggleMembers(owner.mobile)}
               style={{
-                padding: '8px 14px',
+                padding: '8px 16px',
                 background: '#083ca0',
                 color: '#fff',
                 border: 'none',
-                borderRadius: '8px',
+                borderRadius: '10px',
                 cursor: 'pointer',
-                fontSize: '14px',
+                fontWeight: '500',
+                fontSize: '14px'
               }}
             >
               {expandedOwners[owner.mobile] ? 'Hide Members' : 'View Members'}
@@ -68,17 +95,42 @@ const AdminPage = () => {
             <div style={{ marginTop: '16px', paddingLeft: '8px' }}>
               {membersMap[owner.mobile]?.length ? (
                 membersMap[owner.mobile].map(member => (
-                  <div key={member._id} style={{ borderTop: '1px solid #eee', padding: '10px 0' }}>
-                    <strong>{member.fullName}</strong><br />
-                    <span>📱 {member.mobile}</span><br />
-                    <span>🗓️ Joined: {formatDate(member.dateJoined)}</span><br />
-                    <span>📦 Plan: {member.planValidity}</span><br />
-                    <span>💰 ₹{member.moneyPaid}</span>
+                  <div
+                    key={member._id}
+                    style={{
+                      padding: '12px 16px',
+                      background: '#f7f9fc',
+                      borderRadius: '12px',
+                      marginBottom: '12px',
+                      border: '1px solid #e0e0e0'
+                    }}
+                  >
+                    <div
+                      onClick={() => toggleMemberDetail(member._id)}
+                      style={{
+                        fontWeight: '600',
+                        fontSize: '15px',
+                        color: '#2b2b2b',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      {member.fullName}
+                    </div>
+
+                    {expandedMembers[member._id] && (
+                      <div style={{ marginTop: '10px', fontSize: '14px', color: '#444' }}>
+                        <div>📱 Mobile: {member.mobile}</div>
+                        <div>📧 Email: {member.email || 'N/A'}</div>
+                        <div>🗓️ Joined: {formatDate(member.dateJoined)}</div>
+                        <div>📦 Plan: {member.planValidity}</div>
+                        <div>💰 Paid: ₹{member.moneyPaid}</div>
+                      </div>
+                    )}
                   </div>
                 ))
               ) : (
-                <p style={{ marginTop: '10px', fontStyle: 'italic', color: '#777' }}>
-                  No members found.
+                <p style={{ fontStyle: 'italic', color: '#888', marginTop: '10px' }}>
+                  No members found for this business.
                 </p>
               )}
             </div>
