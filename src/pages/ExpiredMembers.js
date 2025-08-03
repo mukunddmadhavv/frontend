@@ -1,6 +1,8 @@
 // pages/ExpiredMembers.js
 import React, { useState, useEffect } from 'react';
 import { parseISO, addDays, isBefore } from 'date-fns';
+import Navbar from '../components/Navbar';
+
 
 const planOptions = [
   { label: '15 Days', value: '15 days' },
@@ -84,6 +86,8 @@ const ExpiredMembers = () => {
   
 
   return (
+<>
+<Navbar/>
     <div style={{ padding: '20px', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
       <h2>⏰ Expired Members</h2>
       {expiredMembers.length === 0 ? (
@@ -204,6 +208,7 @@ const ExpiredMembers = () => {
         ))
       )}
     </div>
+      </>
   );
 };
 
